@@ -52,7 +52,7 @@ int BP_CreateFile(char *fileName){
     bplus_info.first_data_block = 1;
     bplus_info.is_open = true;
     bplus_info.max_records_per_block = (BF_BLOCK_SIZE - sizeof(BPLUS_DATA_NODE)) / sizeof(Record);
-    bplus_info.num_of_blocks = 1;
+    bplus_info.num_of_blocks = 1; //μονο αυτο με τα μεταδεδομενα του αρχειου
 
     memcpy(data, &bplus_info, sizeof(BPLUS_INFO));
 
