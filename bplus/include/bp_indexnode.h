@@ -14,6 +14,8 @@ typedef struct{
 }BPLUS_INDEX_NODE;
 
 int create_index_node(int file_desc, BPLUS_INFO* bplus_info);
+BPLUS_INDEX_NODE* get_metadata_indexnode(int file_desc, int block_id);
+
 
 
 #endif

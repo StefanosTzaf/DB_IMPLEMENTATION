@@ -30,3 +30,23 @@ int create_index_node(int file_desc, BPLUS_INFO* bplus_info){
 
     return index_node.block_id;
 }
+
+
+BPLUS_INDEX_NODE* get_metadata_indexnode(int file_desc, int block_id){
+    BF_Block* block;
+    BF_Block_Init(&block);
+
+    CALL_BF(BF_GetBlock(file_desc, block_id, block));
+
+    void* data = BF_Block_GetData(block);
+
+    BPLUS_INDEX_NODE* index_node;
+
+    //αντιγραφη των μεταδεδομενων απο το block στην δομη index_node
+    memcpy(index_node, data, sizeof(BPLUS_INDEX_NODE));
+
+    CALL_BF(BF_UnpinBlock(block));
+    BF_Block_Destroy(&block);
+
+    return index_node;
+}
