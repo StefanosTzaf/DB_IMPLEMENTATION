@@ -8,15 +8,13 @@
 #include <bp_datanode.h>
 #include <stdbool.h>
 
-#define bplus_ERROR -1
-
 #define CALL_BF(call)         \
   {                           \
     BF_ErrorCode code = call; \
     if (code != BF_OK)        \
     {                         \
       BF_PrintError(code);    \
-      return bplus_ERROR;     \
+      exit(code);             \
     }                         \
   }
 
@@ -24,6 +22,7 @@
 
 
 int BP_CreateFile(char *fileName){
+  
   CALL_BF(BF_CreateFile(fileName));
 
   int file_desc;
@@ -43,6 +42,7 @@ int BP_CreateFile(char *fileName){
     //δεδομενα του block
     void* data = BF_Block_GetData(block);
 
+    //αρχικοποιηση των μεταδεδομενων του Β+ δεντρου
     BPLUS_INFO bplus_info;
     bplus_info.file_desc = file_desc;
     bplus_info.root_block = 0;
@@ -58,10 +58,12 @@ int BP_CreateFile(char *fileName){
 
 
     BF_Block_SetDirty(block); //αφου τροποποιηθηκε το block, το κανουμε dirty
-    CALL_BF(BF_UnpinBlock(block)) //δεν το χρειαζομαστε πλεον
+    
+    CALL_BF(BF_UnpinBlock(block)); //unpin του block, αφου δεν το χρειαζομαστε πια
+
     BF_Block_Destroy(&block); //καταστροφη του δεικτη
 
-    BF_CloseFile(file_desc); //κλεισιμο του αρχειου
+    CALL_BF(BF_CloseFile(file_desc)); //κλεισιμο του αρχειου
 
   return 0;
 }
@@ -73,7 +75,7 @@ BPLUS_INFO* BP_OpenFile(char *fileName, int *file_desc){
   BF_Block* block;
   BF_Block_Init(&block);
 
-  //επιστρεφει το block με τα μεταδεδομενα
+  //επιστρεφει το block 0 με τα μεταδεδομενα στη μεταβλητη block
   CALL_BF(BF_GetBlock(*file_desc, 0, block));
 
   void* data = BF_Block_GetData(block);
@@ -81,7 +83,9 @@ BPLUS_INFO* BP_OpenFile(char *fileName, int *file_desc){
   //αποθηκευση των μεταδεδομενων στη δομη bplus_info
   BPLUS_INFO* bplus_info = (BPLUS_INFO*)data;
 
-  CALL_BF(BF_UnpinBlock(block)); //μονο unpin χωρις set_dirty αφου δεν αλλαξαμε κατι
+  //μονο unpin χωρις set_dirty αφου δεν αλλαξαμε κατι
+  CALL_BF(BF_UnpinBlock(block));
+  
   BF_Block_Destroy(&block);
 
   return bplus_info;
@@ -97,14 +101,15 @@ int BP_CloseFile(int file_desc,BPLUS_INFO* info){
   return 0;
 }
 
-int BP_InsertEntry(int file_desc,BPLUS_INFO *bplus_info, Record record)
-{ 
+int BP_InsertEntry(int file_desc,BPLUS_INFO *bplus_info, Record record){
+
+
   return 0;
 }
 
-int BP_GetEntry(int file_desc,BPLUS_INFO *bplus_info, int value,Record** record)
-{  
-  *record=NULL;
+int BP_GetEntry(int file_desc,BPLUS_INFO *bplus_info, int value,Record** record){
+  
+  
   return 0;
 }
 

@@ -6,7 +6,7 @@
 #include <bp_file.h>
 #include <bp_indexnode.h>
 
-#define bplus_ERROR -1
+
 
 #define CALL_BF(call)         \
   {                           \
@@ -14,7 +14,7 @@
     if (code != BF_OK)        \
     {                         \
       BF_PrintError(code);    \
-      return bplus_ERROR;     \
+      exit(code);             \
     }                         \
   }
 
@@ -29,8 +29,10 @@ typedef struct {
 
 int create_data_node(int file_desc, BPLUS_INFO* bplus_info);
 BPLUS_DATA_NODE* get_metadata_datanode(int file_desc, int block_id);
-int find_record_in_data_node(BPLUS_DATA_NODE* data_node, int key);
-int split_data_node(BPLUS_DATA_NODE* src_node, BPLUS_DATA_NODE* dest_node);
 
+
+//den exw ulopoihsei - den jerw an xreiazodai akomh
+int find_record_in_data_node(BPLUS_DATA_NODE* data_node, int key);
+int split_data_node(BPLUS_DATA_NODE* src_node);
 
 #endif 
