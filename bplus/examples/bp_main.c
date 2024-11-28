@@ -100,15 +100,23 @@ void test(){
   strcpy(rec1.city, city);
 
   Record rec2;
-  rec2.id = 10;
+  rec2.id = 5;
   strcpy(rec2.name, name2);
   strcpy(rec2.surname, surname2);
   strcpy(rec2.city, city2);
+
+  Record rec3;
+  rec3.id = 45;
+  strcpy(rec3.name, name2);
+  strcpy(rec3.surname, surname2);
+  strcpy(rec3.city, city2);
 
   int id = create_data_node(file_desc, info);
   
   insert_rec_in_datanode(file_desc, id, info, rec1);
   insert_rec_in_datanode(file_desc, id, info, rec2);
+  insert_rec_in_datanode(file_desc, id, info, rec3);
+
 
   print_data_node(file_desc, id);
 

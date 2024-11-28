@@ -75,6 +75,8 @@ void insert_rec_in_datanode(int fd, int node, BPLUS_INFO* bplus_info, Record new
         //αν υπαρχουν εγγραφες τοποθετουμε την νεα εγγραφη ακριβως πριν την πρωτη εγγραφη που εχει μεγαλυτερο κλειδι
         else{
             
+            bool is_max = true; //αν το κλειδι της νεας εγγραφης ειναι το μεγαλυτερο
+
             for(int i = 0; i <= metadata->num_records; i++){
             
                 Record* rec = (Record*) (data + sizeof(BPLUS_DATA_NODE) + i * sizeof(Record));
@@ -82,6 +84,8 @@ void insert_rec_in_datanode(int fd, int node, BPLUS_INFO* bplus_info, Record new
                 //η νεα εγγραφη πρεπει να μπει πριν απο αυτη
                 if(rec->id > key){
                     
+                    is_max = false; //βρηκαμε μεγαλυτερο κλειδι
+
                     //πρεπει να μετακινησουμε ολες τις εγγραφες απο την ι-οστη, μια θεση δεξια ωστε να μπει η νεα στην καταλληλη θεση
                     memmove(data + sizeof(BPLUS_DATA_NODE) + (i + 1) * sizeof(Record), data + sizeof(BPLUS_DATA_NODE) + i * sizeof(Record), 
                         (metadata->num_records - i) * sizeof(Record));
@@ -91,6 +95,11 @@ void insert_rec_in_datanode(int fd, int node, BPLUS_INFO* bplus_info, Record new
                     
                     break;
                 }   
+            }
+            
+            //αν η νεα εγγραφη εχει το μεγαλυτερο κλειδι, πρεπει να εισαχθει στο τελος
+            if(is_max == true){
+                    memcpy(data + sizeof(BPLUS_DATA_NODE) + metadata->num_records * sizeof(Record), &new_rec, sizeof(Record));
             }
 
         }
