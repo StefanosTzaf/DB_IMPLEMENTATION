@@ -28,6 +28,11 @@ int create_index_node(int file_desc, BPLUS_INFO* bplus_info){
     CALL_BF(BF_UnpinBlock(block)); //δεν το χρειαζομαστε πια
     BF_Block_Destroy(&block); //καταστροφη του δεικτη στο block
 
+
+    bplus_info->num_of_blocks++; //αυξανουμε τον αριθμο των μπλοκ
+    
+
+
     return index_node.block_id;
 }
 
@@ -50,3 +55,4 @@ BPLUS_INDEX_NODE* get_metadata_indexnode(int file_desc, int block_id){
 
     return index_node;
 }
+

@@ -23,7 +23,6 @@ int create_data_node(int file_desc, BPLUS_INFO* bplus_info){
     //εχουμε 2 μπλοκ συνολο, το id του νεου θα ειναι 2
     data_node.next_block = -1; //αρχικα δεν υπαρχει επομενο block
 
-
     memcpy(data, &data_node, sizeof(BPLUS_DATA_NODE)); //αντιγραφη μεταδεδομενων στο block
 
     BF_Block_SetDirty(block); //αφου τροποποιηθηκε το block, το κανουμε dirty
@@ -79,19 +78,26 @@ void insert_rec_in_datanode(int fd, int node, BPLUS_INFO* bplus_info, Record new
     void* data = BF_Block_GetData(block);
     BPLUS_DATA_NODE* metadata = (BPLUS_DATA_NODE*)data; //μεταδεδομενα του block
 
+
     //αν υπαρχει χωρος για την εγγραφη στο τωρινο block
     if(metadata->num_records < bplus_info->max_records_per_block){
 
         int key = new_rec.id;
-
+ 
         //αν δεν υπαρχιυν εγγραφες απλα προσθετουμε την εγγραφη μετα τα μεταδεδομενα
         if(metadata->num_records == 0){
+            metadata->minKey = key;
             memcpy(data + sizeof(BPLUS_DATA_NODE), &new_rec, sizeof(Record));
         }
 
         //αν υπαρχουν εγγραφες τοποθετουμε την νεα εγγραφη ακριβως πριν την πρωτη εγγραφη που εχει μεγαλυτερο κλειδι
         else{
             
+            int previousMinKey = metadata->minKey; //το προηγουμενο ελαχιστο κλειδι του block
+            if(key < previousMinKey){
+                metadata->minKey = key;
+            }
+
             bool is_max = true; //αν το κλειδι της νεας εγγραφης ειναι το μεγαλυτερο
 
             for(int i = 0; i < metadata->num_records; i++){
@@ -217,6 +223,8 @@ int split_data_node(int fd, int id, BPLUS_INFO* bplus_info, Record new_rec){
         new_metadata->num_records--;
         insert_rec_in_datanode(fd, new_id, bplus_info, new_rec); //εισαγωγη της νεας εγγραφης στο νεο block
     }
+    
+    
 
     return new_id;
 }
