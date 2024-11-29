@@ -94,21 +94,21 @@ void test_insert_rec_in_datanode(){
 
 
   Record rec1;
-  rec1.id = 12;
+  rec1.id = 1;
   strcpy(rec1.name, name);
   strcpy(rec1.surname, surname);
   strcpy(rec1.city, city);
 
   Record rec2;
-  rec2.id = 5;
+  rec2.id = 2;
   strcpy(rec2.name, name2);
   strcpy(rec2.surname, surname2);
   strcpy(rec2.city, city2);
 
   Record rec3;
   Record rec4;
-  rec3.id = 45;
-  rec4.id = 23;
+  rec3.id = 3;
+  rec4.id = 4;
 
   strcpy(rec3.name, name2);
   strcpy(rec3.surname, surname2);
@@ -123,14 +123,12 @@ void test_insert_rec_in_datanode(){
   
   insert_rec_in_datanode(file_desc, id, info, rec1);
   insert_rec_in_datanode(file_desc, id, info, rec3);
-  insert_rec_in_datanode(file_desc, id, info, rec2);
   insert_rec_in_datanode(file_desc, id, info, rec4);
 
-  // int new_node = split_data_node(file_desc, id, info, rec4);
-  
+  int new_node = split_data_node(file_desc, id, info, rec2);
 
   print_data_node(file_desc, id);
-  // print_data_node(file_desc, new_node);
+  print_data_node(file_desc, new_node);
 
   BP_CloseFile(file_desc,info);
   BF_Close();
