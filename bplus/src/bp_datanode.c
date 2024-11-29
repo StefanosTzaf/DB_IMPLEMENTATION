@@ -165,14 +165,20 @@ int split_data_node(int fd, int id, BPLUS_INFO* bplus_info, Record new_rec){
     metadata->next_block = new_id; //το επομενο block του παλιου γινεται το νεο
 
     int pos = 0; //position της νεας εγγραφης
+    bool is_max = true;
     for(int i = 0; i < metadata->num_records; i++){ 
         
         Record* rec = (Record*) (data + sizeof(BPLUS_DATA_NODE) + i * sizeof(Record)); //εξεταζουμε την εγγραφη i
         
         if(new_rec.id < rec->id){ //αν το κλειδι της νεας εγγραφης ειναι μικροτερο απο το κλειδι της εγγραφης i
+            is_max = false;
             pos = i; //η θεση της νεας εγγραφης ειναι πριν την εγγραφη i, δηλαδη αν pos = 2 πρεπει να μπει η 0, η 1 μετα η νεα και μετα η 2
             break;
         }
+    }
+
+    if(is_max == true){
+        pos = metadata->num_records - 1;
     }
     
     int old_num_records = metadata->num_records; //αριθμος εγγραφων του παλιου block αρχικα
@@ -203,7 +209,13 @@ int split_data_node(int fd, int id, BPLUS_INFO* bplus_info, Record new_rec){
 
     //αν η νεα εγγραφη πρεπει να μπει στο νεο block
     else{
-        
+
+        void* tempDest = new_data + sizeof(BPLUS_DATA_NODE); 
+        void* tempSrc = data + sizeof(BPLUS_DATA_NODE) + metadata->num_records * sizeof(Record); //απο την μεση και μετα
+        memmove(tempDest, tempSrc, (new_metadata->num_records - 1) * sizeof(Record));
+
+        new_metadata->num_records--;
+        insert_rec_in_datanode(fd, new_id, bplus_info, new_rec); //εισαγωγη της νεας εγγραφης στο νεο block
     }
 
     return new_id;

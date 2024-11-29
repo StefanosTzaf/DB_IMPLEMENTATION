@@ -100,15 +100,17 @@ void test_insert_rec_in_datanode(){
   strcpy(rec1.city, city);
 
   Record rec2;
-  rec2.id = 2;
+  rec2.id = 20;
   strcpy(rec2.name, name2);
   strcpy(rec2.surname, surname2);
   strcpy(rec2.city, city2);
 
   Record rec3;
   Record rec4;
+  Record rec5;
   rec3.id = 3;
   rec4.id = 4;
+  rec5.id = 5;
 
   strcpy(rec3.name, name2);
   strcpy(rec3.surname, surname2);
@@ -118,12 +120,18 @@ void test_insert_rec_in_datanode(){
   strcpy(rec4.surname, surname);
   strcpy(rec4.city, city);
 
+  strcpy(rec5.name, name2);
+  strcpy(rec5.surname, surname2);
+  strcpy(rec5.city, city2);
+
 
   int id = create_data_node(file_desc, info);
   
   insert_rec_in_datanode(file_desc, id, info, rec1);
   insert_rec_in_datanode(file_desc, id, info, rec3);
   insert_rec_in_datanode(file_desc, id, info, rec4);
+  insert_rec_in_datanode(file_desc, id, info, rec5);
+
 
   int new_node = split_data_node(file_desc, id, info, rec2);
 
