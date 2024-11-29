@@ -32,9 +32,8 @@ void insert_rec_in_datanode(int fd, int node, BPLUS_INFO* bplus_info, Record rec
 
 
 
-// int split_data_node(int fd, int node, BPLUS_INFO* bplus_info, Record rec);
+int split_data_node(int fd, int node, BPLUS_INFO* bplus_info, Record rec);
 
-//den exw ulopoihsei - den jerw an xreiazodai akomh
-int find_record_in_data_node(BPLUS_DATA_NODE* data_node, int key);
+
 
 #endif 

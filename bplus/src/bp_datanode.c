@@ -36,17 +36,17 @@ int create_data_node(int file_desc, BPLUS_INFO* bplus_info){
 
 // επιστρεφει τα μεταδεδομενα ενος μπλοκ δεδομενων
 BPLUS_DATA_NODE* get_metadata_datanode(int file_desc, int block_id){
+    
     BF_Block* block;
     BF_Block_Init(&block);
-
     CALL_BF(BF_GetBlock(file_desc, block_id, block));
 
     void* data = BF_Block_GetData(block);
 
-    BPLUS_DATA_NODE* data_node;
-
     //αντιγραφουμε τα μεταδεδομενα απο το block στην δομη data_node
-    memcpy(data_node, data, sizeof(BPLUS_DATA_NODE));
+    BPLUS_DATA_NODE* data_node = (BPLUS_DATA_NODE*)(data);
+
+    
 
     CALL_BF(BF_UnpinBlock(block));
     BF_Block_Destroy(&block);
@@ -54,6 +54,10 @@ BPLUS_DATA_NODE* get_metadata_datanode(int file_desc, int block_id){
     return data_node;
 }
 
+
+
+
+//προσθετει μια νεα εγγραφη στο μπλοκ δεδομενων το οποιο εχει χωρο
 void insert_rec_in_datanode(int fd, int node, BPLUS_INFO* bplus_info, Record new_rec){
     BF_Block* block;
     BF_Block_Init(&block);
@@ -77,7 +81,7 @@ void insert_rec_in_datanode(int fd, int node, BPLUS_INFO* bplus_info, Record new
             
             bool is_max = true; //αν το κλειδι της νεας εγγραφης ειναι το μεγαλυτερο
 
-            for(int i = 0; i <= metadata->num_records; i++){
+            for(int i = 0; i < metadata->num_records; i++){
             
                 Record* rec = (Record*) (data + sizeof(BPLUS_DATA_NODE) + i * sizeof(Record));
 
@@ -111,12 +115,88 @@ void insert_rec_in_datanode(int fd, int node, BPLUS_INFO* bplus_info, Record new
         
     }
 
-    //αν δεν χωραει πρεπει να ισομοιρασουμε τις εγγραφες μαζι με τη νεα σε 2 μπλοκ
-    else{
-        // split_data_node(fd, node, bplus_info, rec);
+    BF_Block_Destroy(&block);
+}
+
+
+
+
+// χωριζει ενα μπλοκ δεδομενων στα δυο, μεταφεροντας τις μισες εγγραφες στο νεο block 
+int split_data_node(int fd, int id, BPLUS_INFO* bplus_info, Record new_rec){
+
+    //######### Αρχικο block ##########//    
+
+    BF_Block* block;
+    BF_Block_Init(&block);
+    CALL_BF(BF_GetBlock(fd, id, block));
+
+    void* data = BF_Block_GetData(block); //δεδομενα του block
+
+    BPLUS_DATA_NODE* metadata = (BPLUS_DATA_NODE*)data; //μεταδεδομενα του block
+    
+    //οι εγγραφες του μπλοκ μαζι με τη νεα πρεπει να ισομοιραστουν 
+    int split_point = (metadata->num_records + 1) / 2; // +1 λογω της νεας εγγραφης
+
+
+    //############# ορισμος νεου block ##########//
+    BF_Block* new_block;
+    BF_Block_Init(&new_block);
+
+    int new_id = create_data_node(fd, bplus_info); //δημιουργια νεου block
+    CALL_BF(BF_GetBlock(fd, new_id, new_block)); //αποθηκευση νεου block στον δεικτη new_block
+    
+    void* new_data = BF_Block_GetData(new_block); //δεδομενα νεου block
+    BPLUS_DATA_NODE* new_metadata = get_metadata_datanode(fd, new_id); //μεταδεδομενα του νεου block
+
+    new_metadata->num_records = split_point; //αν το παλιο block ειχε 7 εγγραφες μαζι με τη νεα, το νεο θα παρει τις τρεις
+    // new_metadata->block_id = new_id; //το id του νεου block
+    new_metadata->next_block = metadata->next_block; //το επομενο block του νεου γινεται αυτο του παλιου
+
+
+    int pos = 0; //position της νεας εγγραφης
+    for(int i = 0; i < metadata->num_records; i++){ 
+        
+        Record* rec = (Record*) (data + sizeof(BPLUS_DATA_NODE) + i * sizeof(Record)); //εξεταζουμε την εγγραφη i
+        
+        if(new_rec.id < rec->id){ //αν το κλειδι της νεας εγγραφης ειναι μικροτερο απο το κλειδι της εγγραφης i
+            pos = i; //η θεση της νεας εγγραφης ειναι πριν την εγγραφη i, δηλαδη αν pos = 2 πρεπει να μπει η 0, η 1 μετα η νεα και μετα η 2
+            break;
+        }
     }
 
-    BF_Block_Destroy(&block);
+    
+    printf("Old block records: %d\n", metadata->num_records);
+    printf("New block records: %d\n", new_metadata->num_records);
+    int old_num_records = metadata->num_records; //αριθμος εγγραφων του παλιου block αρχικα
+     
+     //ανανεωση αριθμου εγγραφων του παλιου block
+    if((old_num_records + 1) % 2 == 0){ //αν οι παλιες εγγραφες + την νεα ισομοιραζονται ακριβως
+        metadata->num_records = split_point;
+        new_metadata->num_records = split_point;
+    }
+    else{
+        metadata->num_records = old_num_records - split_point;
+        new_metadata->num_records = old_num_records - split_point - 1;//μια εγγραφη λιγοτερη
+    }
+
+
+
+    // αν το pos ειναι στο πρωτο μισο των εγγραφων, η νεα εγγραφη μπαινει στο παλιο block
+    if(pos < split_point){
+            //μετακινηση των μισων εγγραφων στο νεο block
+        memcpy(new_data + sizeof(BPLUS_DATA_NODE), data + sizeof(BPLUS_DATA_NODE) + split_point * sizeof(Record), 
+            new_metadata->num_records * sizeof(Record)); //αντιγραφη του δευτερου μισου των εγγραφων στο νεο block
+
+        insert_rec_in_datanode(fd, id, bplus_info, new_rec);
+    }
+    //αλλιως, προσθηκη στο νεο block
+    else{
+        insert_rec_in_datanode(fd, new_metadata->block_id, bplus_info, new_rec);
+    }
+
+
+    return new_id; //επιστροφη id του νεου block
+
 }
 
 
@@ -140,48 +220,4 @@ void print_data_node(int fd, int id){
 
     CALL_BF(BF_UnpinBlock(block));
     BF_Block_Destroy(&block);
-}
-
-
-// χωριζει ενα μπλοκ δεδομενων στα δυο, μεταφεροντας τις μισες εγγραφες στο νεο block 
-int split_data_node(int fd, int id, BPLUS_INFO* bplus_info, Record rec){
-
-    //######### Αρχικο block ##########//    
-
-    // BF_Block* block;
-    // BF_Block_Init(&block);
-    // CALL_BF(BF_GetBlock(fd, id, block));
-
-    // void* data = BF_Block_GetData(block);
-    // BPLUS_DATA_NODE* metadata = (BPLUS_DATA_NODE*)data; //μεταδεδομενα του block
-    
-    // //οι εγγραφες του μπλοκ μαζι με τη νεα πρεπει να ισομοιραστουν 
-    // int split_point = (metadata->num_records + 1) / 2; // +1 λογω της νεας εγγραφης
-
-
-    // //############# ορισμος νεου block ##########//
-    // BF_Block* new_block;
-    // BF_Block_Init(&new_block);
-    // CALL_BF(BF_AllocateBlock(fd, new_block)); //δεσμευουμε ενα νεο block στο αρχειο
-
-    // void* new_data = BF_Block_GetData(new_block); //δεδομενα νεου block
-
-    // BPLUS_DATA_NODE new_metadata; //μεταδεδομενα του νεου block
-    // new_metadata.num_records = split_point; //αν το παλιο block ειχε 7 εγγραφες μαζι με τη νεα, το νεο θα παρει τις τρεις
-    // new_metadata.block_id = bplus_info->num_of_blocks; //το id του νεου block
-    // new_metadata.next_block = metadata->next_block; //το επομενο block του νεου γινεται αυτο του παλιου
-
-    // memcpy(new_data, &new_metadata, sizeof(BPLUS_DATA_NODE)); //αντιγραφη μεταδεδομενων στο block
-
-    // for(int i = 0; i < split_point; i++){ //αντιγραφη των εγγραφων απο το παλιο block στο νεο
-    //     memcpy(&new_data[sizeof(BPLUS_DATA_NODE) + i*sizeof(Record)], 
-    //            &data[sizeof(BPLUS_DATA_NODE) + (split_point + i)*sizeof(Record)], 
-    //            sizeof(Record));
-    // }
-    // //αντιγραφη των εγγραφων απο το παλιο block στο νεο    
-
-
-    // metadata->next_block = new_metadata.block_id; //το επομενο block του παλιου ειναι το νεο
-    // bplus_info->num_of_blocks++; //αυξανουμε τον αριθμο των μπλοκ
-
 }

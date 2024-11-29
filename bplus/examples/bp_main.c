@@ -22,14 +22,14 @@
 
 void insertEntries();
 void findEntries();
-void test();
+void test_insert_rec_in_datanode();
 
 int main()
 {
   
   printf("max num of records per block %ld\n", (BF_BLOCK_SIZE - sizeof(BPLUS_DATA_NODE)) / sizeof(Record));
 
-  test();
+  test_insert_rec_in_datanode();
 
 
   
@@ -76,7 +76,7 @@ void findEntries(){
 }
 
 
-void test(){
+void test_insert_rec_in_datanode(){
   BF_Init(LRU);
   BP_CreateFile(FILE_NAME);
 
@@ -106,20 +106,33 @@ void test(){
   strcpy(rec2.city, city2);
 
   Record rec3;
+  Record rec4;
   rec3.id = 45;
+  rec4.id = 23;
+
   strcpy(rec3.name, name2);
   strcpy(rec3.surname, surname2);
   strcpy(rec3.city, city2);
 
+  strcpy(rec4.name, name);
+  strcpy(rec4.surname, surname);
+  strcpy(rec4.city, city);
+
+
   int id = create_data_node(file_desc, info);
   
   insert_rec_in_datanode(file_desc, id, info, rec1);
-  insert_rec_in_datanode(file_desc, id, info, rec2);
   insert_rec_in_datanode(file_desc, id, info, rec3);
+  insert_rec_in_datanode(file_desc, id, info, rec2);
+  insert_rec_in_datanode(file_desc, id, info, rec4);
 
+  // int new_node = split_data_node(file_desc, id, info, rec4);
+  
 
   print_data_node(file_desc, id);
+  // print_data_node(file_desc, new_node);
 
   BP_CloseFile(file_desc,info);
   BF_Close();
 }
+
