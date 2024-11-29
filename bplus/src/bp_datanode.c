@@ -175,28 +175,23 @@ int split_data_node(int fd, int id, BPLUS_INFO* bplus_info, Record new_rec){
         new_metadata->num_records = split_point;
     }
     else{
-        metadata->num_records = old_num_records - split_point;
-        new_metadata->num_records = old_num_records - split_point - 1;//μια εγγραφη λιγοτερη
+        metadata->num_records = old_num_records - split_point + 1;
+        new_metadata->num_records = old_num_records - split_point ;//μια εγγραφη λιγοτερη
     }
 
+    //αν η νεα εγγραφή είναι αριστερά
+    if(pos < metadata->num_records){
+        //μετακινηση των εγγραφων που ειναι από την μέση και μετα 
+        void* tempDest = new_data + sizeof(BPLUS_DATA_NODE); // θα τα μετακινήσουμε στο δεξί μπλοκ
+        void* tempSrc = data + sizeof(BPLUS_DATA_NODE) + ( (metadata->num_records - 1) * sizeof(Record) ); // ποιες εγγραφές; αυτές που είναι από την μέση και μετά(δεν έχουμε προσθεσει ακόμα την νέα εγγραφη αρα -1)
+        memmove(tempDest, tempSrc, new_metadata->num_records  * sizeof(Record));
 
-
-    // αν το pos ειναι στο πρωτο μισο των εγγραφων, η νεα εγγραφη μπαινει στο παλιο block
-    if(pos < split_point){
-            //μετακινηση των μισων εγγραφων στο νεο block
-        memcpy(new_data + sizeof(BPLUS_DATA_NODE), data + sizeof(BPLUS_DATA_NODE) + split_point * sizeof(Record), 
-            new_metadata->num_records * sizeof(Record)); //αντιγραφη του δευτερου μισου των εγγραφων στο νεο block
-
-        insert_rec_in_datanode(fd, id, bplus_info, new_rec);
+        insert_rec_in_datanode(fd, id, bplus_info, new_rec); //εισαγωγη της νεας εγγραφης στο παλιο block
     }
-    //αλλιως, προσθηκη στο νεο block
+
     else{
-        insert_rec_in_datanode(fd, new_metadata->block_id, bplus_info, new_rec);
+
     }
-
-
-    return new_id; //επιστροφη id του νεου block
-
 }
 
 
