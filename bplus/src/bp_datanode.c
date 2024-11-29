@@ -224,7 +224,12 @@ int split_data_node(int fd, int id, BPLUS_INFO* bplus_info, Record new_rec){
         insert_rec_in_datanode(fd, new_id, bplus_info, new_rec); //εισαγωγη της νεας εγγραφης στο νεο block
     }
     
+    //Ενημερωση min κλειδιων των δυο block
+    Record* firtRec1 = (Record*) (data + sizeof(BPLUS_DATA_NODE)); //πρωτη εγγραφη του παλιου block
+    Record* firstRec2 = (Record*) (new_data + sizeof(BPLUS_DATA_NODE)); //πρωτη εγγραφη του νεου block
     
+    metadata->minKey = firtRec1->id; //το minKey του παλιου block γινεται το κλειδι της πρωτης εγγραφης
+    new_metadata->minKey = firstRec2->id; //το minKey του νεου block γινεται το κλειδι της πρωτης εγγραφης
 
     return new_id;
 }

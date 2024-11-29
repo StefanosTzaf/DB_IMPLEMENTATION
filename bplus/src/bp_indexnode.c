@@ -24,13 +24,11 @@ int create_index_node(int file_desc, BPLUS_INFO* bplus_info){
     //αντιγραφη των μεταδεδομενων στο block
     memcpy(data, &index_node, sizeof(BPLUS_INDEX_NODE));
 
+    bplus_info->num_of_blocks++; //αυξανουμε τον αριθμο των μπλοκ  
+    
     BF_Block_SetDirty(block); //τροποποιησαμε το block αρα το κανουμε dirty
     CALL_BF(BF_UnpinBlock(block)); //δεν το χρειαζομαστε πια
     BF_Block_Destroy(&block); //καταστροφη του δεικτη στο block
-
-
-    bplus_info->num_of_blocks++; //αυξανουμε τον αριθμο των μπλοκ
-    
 
 
     return index_node.block_id;

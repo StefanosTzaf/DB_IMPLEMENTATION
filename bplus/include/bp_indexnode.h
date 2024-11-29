@@ -16,7 +16,7 @@ typedef struct{
 
 int create_index_node(int file_desc, BPLUS_INFO* bplus_info);
 BPLUS_INDEX_NODE* get_metadata_indexnode(int file_desc, int block_id);
-void insert_key_and_pointer_in_indexnode(int fd, int node, BPLUS_INFO* bplus_info, int key,void* pointer);
+void insert_key_indexnode(int fd, int node, BPLUS_INFO* bplus_info, int key, void* pointer);
 
 
 #endif
