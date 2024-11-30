@@ -185,6 +185,9 @@ int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_ro
 
   //αναδρομική κλήση
   --height_of_current_root;
+  BF_UnpinBlock(block);
+  BF_Block_Destroy(&block);
+  
   return BP_FindDataBlockToInsert(fd, key, child, height_of_current_root);
     
 }
