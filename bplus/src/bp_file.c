@@ -147,8 +147,7 @@ int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_ro
   void* data = BF_Block_GetData(block);
   int num_of_keys = get_metadata_indexnode(fd, root)->num_keys;
 
-  int left_child = 0; //ο δεικτης προς το block με μικροτερες τιμες απο το κλειδι που εξεταζουμε 
-  int right_child = 0; // μόνο στην περίπτωσηπου πρέπει να ακολουθήσουμε το δεξιότερο block
+  int child_id = 0;
   int current_key;
 
   BF_Block* child;
@@ -162,10 +161,10 @@ int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_ro
 
     if(key < current_key){
   
-      memcpy(&left_child, data + sizeof(BPLUS_INDEX_NODE) + (i - 1) * sizeof(int), sizeof(int)); 
+      memcpy(&child_id, data + sizeof(BPLUS_INDEX_NODE) + (i - 1) * sizeof(int), sizeof(int)); 
 
       //το block που πρεπει να ακολουθησουμε στην πορεια      
-      CALL_BF(BF_GetBlock(fd, left_child, child));
+      CALL_BF(BF_GetBlock(fd, child_id, child));
   
       break;
     }
@@ -173,10 +172,10 @@ int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_ro
     //αν φτασαμε στο τελευταιο κλειδι και δεν εχουμε βρει καποιο μικροτερο
     else if(i == 2 * num_of_keys - 1){
 
-      memcpy(&right_child, data + sizeof(BPLUS_INDEX_NODE) + i * sizeof(int), sizeof(int)); 
+      memcpy(&child_id, data + sizeof(BPLUS_INDEX_NODE) + i * sizeof(int), sizeof(int)); 
 
       //αποθηκευση του δεξιου block με τιμες κλειδιων >= του τελευταιου κλειδιου που εξετασαμε
-      CALL_BF(BF_GetBlock(fd, right_child, child));
+      CALL_BF(BF_GetBlock(fd, child_id, child));
       break;
     } 
 
@@ -187,8 +186,8 @@ int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_ro
   --height_of_current_root;
   BF_UnpinBlock(block);
   BF_Block_Destroy(&block);
-  
-  return BP_FindDataBlockToInsert(fd, key, child, height_of_current_root);
+
+  return BP_FindDataBlockToInsert(fd, key,  child_id, height_of_current_root);
     
 }
 
