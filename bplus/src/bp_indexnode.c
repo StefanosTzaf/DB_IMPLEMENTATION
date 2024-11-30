@@ -54,3 +54,12 @@ BPLUS_INDEX_NODE* get_metadata_indexnode(int file_desc, int block_id){
     return index_node;
 }
 
+void insert_key_indexnode(int fd, int id, BPLUS_INFO* bplus_info, int key, int child_id){
+
+    BF_Block* block;
+    BF_Block_Init(&block);
+    
+
+    
+
+}

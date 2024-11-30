@@ -30,9 +30,6 @@ int create_data_node(int file_desc, BPLUS_INFO* bplus_info);
 BPLUS_DATA_NODE* get_metadata_datanode(int file_desc, int block_id);
 void print_data_node(int fd, int id);
 void insert_rec_in_datanode(int fd, int node, BPLUS_INFO* bplus_info, Record rec);
-
-
-
 int split_data_node(int fd, int node, BPLUS_INFO* bplus_info, Record rec);
 
 

@@ -91,7 +91,7 @@ BPLUS_INFO* BP_OpenFile(char *fileName, int *file_desc){
   return bplus_info;
 }
 
-int BP_CloseFile(int file_desc,BPLUS_INFO* info){
+int BP_CloseFile(int file_desc, BPLUS_INFO* info){
 
   //τα block εχουν γινει ηδη unpinned στις υπολοιπες συναρτησεις
   //οποτε αρκει να κλεισουμε το αρχειο
@@ -101,8 +101,26 @@ int BP_CloseFile(int file_desc,BPLUS_INFO* info){
   return 0;
 }
 
-int BP_InsertEntry(int file_desc,BPLUS_INFO *bplus_info, Record record){
+int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
+  //Αν το B+ δέντρο είναι κενό, δημιουργούμε ένα νέο block δεδομένων
+  if(bplus_info->height == 0){
+    
+    int id_datanode = create_data_node(fd, bplus_info);
+    insert_rec_in_datanode(fd, id_datanode, bplus_info, record);
+
+    int id_indexnode = create_index_node(fd, bplus_info);
+    bplus_info->root_block = id_indexnode; //ορισμος ριζας
+
+    insert_key_indexnode(fd, id_indexnode, bplus_info, record.id, id_datanode);
+
+    bplus_info->height++;
+
+    return id_datanode; //επιστροφη του block id που εγινε η εισαγωγη 
+  }
+
+  //Αν το B+ δέντρο δεν είναι κενό
+  
 
   return 0;
 }
@@ -111,5 +129,52 @@ int BP_GetEntry(int file_desc,BPLUS_INFO *bplus_info, int value,Record** record)
   
   
   return 0;
+}
+
+
+int BP_FindDataBlockToInsert(int fd, BPLUS_INFO* bplus_info, int key, int root){
+
+  BF_Block* block;
+  BF_Block_Init(&block);
+  CALL_BF(BF_GetBlock(fd, root, block));
+
+  void* data = BF_Block_GetData(block);
+  int num_of_keys = get_metadata_indexnode(fd, root)->num_keys;
+
+  int left_child = 0; //ο δεικτης προς το block με μικροτερες τιμες απο το κλειδι που εξεταζουμε 
+  int right_child = 0; 
+  int current_key;
+
+  BF_Block* child;
+  BF_Block_Init(&child);
+
+  
+
+  //θελουμε να πηγαινει απο κλειδι σε κλειδι
+  for(int i = 1; i <= (2 * num_of_keys + 1) ; i+= 2){
+    
+    memcpy(&current_key, data + sizeof(BPLUS_INDEX_NODE) + i * sizeof(int), sizeof(int));
+
+    if(key < current_key){
+  
+      memcpy(&left_child, data + sizeof(BPLUS_INDEX_NODE) + (i - 1) * sizeof(int), sizeof(int)); 
+
+      //το block που πρεπει να ακολουθησουμε στην πορεια      
+      CALL_BF(BF_GetBlock(fd, left_child, child));
+  
+      break;
+    }
+
+    //αν φτασαμε στο τελευταιο κλειδι και δεν εχουμε βρει καποιο μικροτερο
+    else if(i == num_of_keys*2){
+
+      memcpy(&right_child, data + sizeof(BPLUS_INDEX_NODE) + i * sizeof(int), sizeof(int)); 
+
+      //αποθηκευση του δεξιου block με τιμες κλειδιων >= του τελευταιου κλειδιου που εξετασαμε
+      CALL_BF(BF_GetBlock(fd, right_child, child));
+    } 
+
+  }
+    
 }
 
