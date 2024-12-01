@@ -125,18 +125,21 @@ void test_insert_rec_in_datanode(){
   strcpy(rec5.city, city2);
 
 
-  int id = create_data_node(file_desc, info);
+  int left_id = create_data_node(file_desc, info);
   
-  insert_rec_in_datanode(file_desc, id, info, rec1);
-  insert_rec_in_datanode(file_desc, id, info, rec3);
-  insert_rec_in_datanode(file_desc, id, info, rec4);
-  insert_rec_in_datanode(file_desc, id, info, rec5);
+  insert_rec_in_datanode(file_desc, left_id, info, rec1);
+  insert_rec_in_datanode(file_desc, left_id, info, rec3);
+  insert_rec_in_datanode(file_desc, left_id, info, rec4);
+  insert_rec_in_datanode(file_desc, left_id, info, rec5);
 
 
-  int new_node = split_data_node(file_desc, id, info, rec2);
+  int index_node = create_index_node(file_desc, info);
+  int right_id = split_data_node(file_desc, left_id, info, rec2);
+  insert_key_indexnode(file_desc, index_node, info, 5, left_id);
 
-  print_data_node(file_desc, id);
-  print_data_node(file_desc, new_node);
+  print_data_node(file_desc, left_id);
+  print_data_node(file_desc, right_id);
+  print_index_node(file_desc, index_node);
 
   BP_CloseFile(file_desc,info);
   BF_Close();

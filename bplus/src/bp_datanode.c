@@ -78,61 +78,55 @@ void insert_rec_in_datanode(int fd, int node, BPLUS_INFO* bplus_info, Record new
     void* data = BF_Block_GetData(block);
     BPLUS_DATA_NODE* metadata = (BPLUS_DATA_NODE*)data; //μεταδεδομενα του block
 
-
-    //αν υπαρχει χωρος για την εγγραφη στο τωρινο block
-    if(metadata->num_records < bplus_info->max_records_per_block){
-
         int key = new_rec.id;
  
-        //αν δεν υπαρχιυν εγγραφες απλα προσθετουμε την εγγραφη μετα τα μεταδεδομενα
-        if(metadata->num_records == 0){
-            metadata->minKey = key;
-            memcpy(data + sizeof(BPLUS_DATA_NODE), &new_rec, sizeof(Record));
-        }
-
-        //αν υπαρχουν εγγραφες τοποθετουμε την νεα εγγραφη ακριβως πριν την πρωτη εγγραφη που εχει μεγαλυτερο κλειδι
-        else{
-            
-            int previousMinKey = metadata->minKey; //το προηγουμενο ελαχιστο κλειδι του block
-            if(key < previousMinKey){
-                metadata->minKey = key;
-            }
-
-            bool is_max = true; //αν το κλειδι της νεας εγγραφης ειναι το μεγαλυτερο
-
-            for(int i = 0; i < metadata->num_records; i++){
-            
-                Record* rec = (Record*) (data + sizeof(BPLUS_DATA_NODE) + i * sizeof(Record));
-
-                //η νεα εγγραφη πρεπει να μπει πριν απο αυτη
-                if(rec->id > key){
-                    
-                    is_max = false; //βρηκαμε μεγαλυτερο κλειδι
-
-                    //πρεπει να μετακινησουμε ολες τις εγγραφες απο την ι-οστη, μια θεση δεξια ωστε να μπει η νεα στην καταλληλη θεση
-                    memmove(data + sizeof(BPLUS_DATA_NODE) + (i + 1) * sizeof(Record), data + sizeof(BPLUS_DATA_NODE) + i * sizeof(Record), 
-                        (metadata->num_records - i) * sizeof(Record));
-                    
-                    //εισαγουμε την εγγραφη στην θεση που αδειασαμε
-                    memcpy(data + sizeof(BPLUS_DATA_NODE) + i * sizeof(Record), &new_rec, sizeof(Record));
-                    
-                    break;
-                }   
-            }
-            
-            //αν η νεα εγγραφη εχει το μεγαλυτερο κλειδι, πρεπει να εισαχθει στο τελος
-            if(is_max == true){
-                    memcpy(data + sizeof(BPLUS_DATA_NODE) + metadata->num_records * sizeof(Record), &new_rec, sizeof(Record));
-            }
-
-        }
-
-        metadata->num_records++; //αυξηση εγγραφων στο block
-
-        BF_Block_SetDirty(block); 
-        CALL_BF( BF_UnpinBlock(block));
-        
+    //αν δεν υπαρχιυν εγγραφες απλα προσθετουμε την εγγραφη μετα τα μεταδεδομενα
+    if(metadata->num_records == 0){
+        metadata->minKey = key;
+        memcpy(data + sizeof(BPLUS_DATA_NODE), &new_rec, sizeof(Record));
     }
+
+    //αν υπαρχουν εγγραφες τοποθετουμε την νεα εγγραφη ακριβως πριν την πρωτη εγγραφη που εχει μεγαλυτερο κλειδι
+    else{
+        
+        int previousMinKey = metadata->minKey; //το προηγουμενο ελαχιστο κλειδι του block
+        if(key < previousMinKey){
+            metadata->minKey = key;
+        }
+
+        bool is_max = true; //αν το κλειδι της νεας εγγραφης ειναι το μεγαλυτερο
+
+        for(int i = 0; i < metadata->num_records; i++){
+        
+            Record* rec = (Record*) (data + sizeof(BPLUS_DATA_NODE) + i * sizeof(Record));
+
+            //η νεα εγγραφη πρεπει να μπει πριν απο αυτη
+            if(rec->id > key){
+                
+                is_max = false; //βρηκαμε μεγαλυτερο κλειδι
+
+                //πρεπει να μετακινησουμε ολες τις εγγραφες απο την ι-οστη, μια θεση δεξια ωστε να μπει η νεα στην καταλληλη θεση
+                memmove(data + sizeof(BPLUS_DATA_NODE) + (i + 1) * sizeof(Record), data + sizeof(BPLUS_DATA_NODE) + i * sizeof(Record), 
+                    (metadata->num_records - i) * sizeof(Record));
+                
+                //εισαγουμε την εγγραφη στην θεση που αδειασαμε
+                memcpy(data + sizeof(BPLUS_DATA_NODE) + i * sizeof(Record), &new_rec, sizeof(Record));
+                
+                break;
+            }   
+        }
+        
+        //αν η νεα εγγραφη εχει το μεγαλυτερο κλειδι, πρεπει να εισαχθει στο τελος
+        if(is_max == true){
+                memcpy(data + sizeof(BPLUS_DATA_NODE) + metadata->num_records * sizeof(Record), &new_rec, sizeof(Record));
+        }
+
+    }
+
+    metadata->num_records++; //αυξηση εγγραφων στο block
+
+    BF_Block_SetDirty(block); 
+    CALL_BF( BF_UnpinBlock(block));   
 
     BF_Block_Destroy(&block);
 }

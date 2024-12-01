@@ -103,23 +103,43 @@ int BP_CloseFile(int file_desc, BPLUS_INFO* info){
 
 int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
-  //Αν το B+ δέντρο είναι κενό, δημιουργούμε ένα νέο block δεδομένων
+  //Αν το B+ δέντρο είναι κενό, δημιουργούμε ένα νέο block δεδομένων μονο
+  //το οποιο αποτελει και τη ριζα του δεντρου
   if(bplus_info->height == 0){
     
     int id_datanode = create_data_node(fd, bplus_info);
     insert_rec_in_datanode(fd, id_datanode, bplus_info, record);
 
-    int id_indexnode = create_index_node(fd, bplus_info);
-    bplus_info->root_block = id_indexnode; //ορισμος ριζας
-
-    insert_key_indexnode(fd, id_indexnode, bplus_info, record.id, id_datanode);
-
+    bplus_info->root_block = id_datanode; //η ριζα προς το παρον ειναι block δεδομενων
     bplus_info->height++;
 
     return id_datanode; //επιστροφη του block id που εγινε η εισαγωγη 
   }
 
+
   //Αν το B+ δέντρο δεν είναι κενό
+  int root = bplus_info->root_block;
+  int height_of_current_root = bplus_info->height;
+
+  //Εύρεση του block δεδομένων που πρεπει να γίνει η εισαγωγή
+  int data_block_id = BP_FindDataBlockToInsert(fd, record.id, root, height_of_current_root);
+
+  BF_Block* block;
+  BF_Block_Init(&block);
+  CALL_BF(BF_GetBlock(fd, data_block_id, block));
+
+  BPLUS_DATA_NODE* data_node = get_metadata_datanode(fd, data_block_id);
+
+  //αν υπαρχει χωρος στο block δεδομενων, εισαγουμε την εγγραφη σε αυτο
+  if(data_node->num_records < bplus_info->max_records_per_block){
+    insert_rec_in_datanode(fd, data_block_id, bplus_info, record);
+  }
+
+  //αν δεν υπαρχει χωρος πρεπει να το σπασουμε
+  else{  
+    
+    split_data_node(fd, data_block_id, bplus_info, record);
+  }
   
 
   return 0;
