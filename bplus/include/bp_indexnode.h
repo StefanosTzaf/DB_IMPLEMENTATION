@@ -19,6 +19,7 @@ int create_index_node(int file_desc, BPLUS_INFO* bplus_info);
 BPLUS_INDEX_NODE* get_metadata_indexnode(int file_desc, int block_id);
 void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int key, int child_id);
 void print_index_node(int fd, int id);
+int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_to_insert, int child_id);
 
 
 #endif
