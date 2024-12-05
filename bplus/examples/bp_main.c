@@ -109,10 +109,15 @@ void test_insert_rec_in_datanode(){
   Record rec4;
   Record rec5;
   Record rec15;
+  Record rec25;
+  Record rec22;
+
   rec3.id = 3;
   rec4.id = 4;
   rec5.id = 5;
   rec15.id = 15;
+  rec25.id = 25;
+  rec22.id = 22;
 
   strcpy(rec3.name, name2);
   strcpy(rec3.surname, surname2);
@@ -130,6 +135,13 @@ void test_insert_rec_in_datanode(){
   strcpy(rec15.surname, surname2);
   strcpy(rec15.city, city2);
 
+  strcpy(rec25.name, name); 
+  strcpy(rec25.surname, surname);
+  strcpy(rec25.city, city);
+
+  strcpy(rec22.name, name2);
+  strcpy(rec22.surname, surname2);
+  strcpy(rec22.city, city2);
 
 
   int left_id = create_data_node(file_desc, info);
@@ -147,10 +159,18 @@ void test_insert_rec_in_datanode(){
   int new_split = split_data_node(file_desc, right_id, info, rec15);
   insert_key_indexnode(file_desc, index_node, info, 20, right_id);
 
+  insert_rec_in_datanode(file_desc, new_split, info, rec25);
+  
+  int split2 = split_data_node(file_desc, new_split, info, rec22);
+
+  int index2 = split_index_node(file_desc, info, index_node, 25, split2);
+
   print_data_node(file_desc, left_id);
   print_data_node(file_desc, right_id);
   print_data_node(file_desc, new_split);
+  print_data_node(file_desc, split2);
   print_index_node(file_desc, index_node);
+  print_index_node(file_desc, index2);
 
   BP_CloseFile(file_desc,info);
   BF_Close();

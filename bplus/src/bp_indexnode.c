@@ -251,9 +251,21 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
         memcpy(data2 + sizeof(BPLUS_INDEX_NODE) + (2 * (i - split_point - 1) + 2) * sizeof(int), &pointers[i + 1], sizeof(int));
     }
           
+
     //ενημερωση μεταδεδομενων των δυο index nodes
-    metadata2->num_keys = metadata1->num_keys - split_point - 1;
     metadata1->num_keys = split_point;
+    
+    //αν το split point ειναι περιττο, γιατι το αρχικο μεγεθος των κλειδιων ειναι περιττο(πχ για 7 κλειδια εχουμε split point = 3)
+    //τοτε καθε block παιρνει τον ιδιο αριθμο κλειδιων, αφου το μεσαιο θα αφαιρεθει
+    if(split_point % 2 != 0){
+        metadata2->num_keys = split_point;
+    }
+
+    //αλλιως το δεξι block παιρνει ενα κλειδι λιγοτερο απο το αριστερο 
+    else{ 
+        metadata2->num_keys = split_point - 1;
+    }
+
 
     BF_Block_SetDirty(block1);
     CALL_BF(BF_UnpinBlock(block1));
