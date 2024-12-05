@@ -7,7 +7,7 @@
 #include "bp_datanode.h"
 #include "bp_indexnode.h"
 
-#define RECORDS_NUM 23 // you can change it if you want
+#define RECORDS_NUM 200 // you can change it if you want
 #define FILE_NAME "data.db"
 
 #define CALL_OR_DIE(call)     \
@@ -63,6 +63,7 @@ void insertEntries(){
   print_data_node(file_desc, 4);
   print_index_node(file_desc, 2);
   print_data_node(file_desc, 3);
+  print_data_node(file_desc, 5);
 
 
   BP_CloseFile(file_desc,info);

@@ -140,7 +140,6 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
   //αν δεν υπαρχει χωρος πρεπει να το σπασουμε
   else{  
-    printf("splitting data node %d\n", data_block_to_insert);
 
     int parent_id;
 
@@ -151,28 +150,36 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
       bplus_info->root_block = parent_id;
 
       metadata_datanode->parent_id = parent_id;
+  
     }
 
     else{
       parent_id = metadata_datanode->parent_id;
     }
 
-    int new_data_node = split_data_node(fd, data_block_to_insert, bplus_info, record);
+    int new_data_node_id = split_data_node(fd, data_block_to_insert, bplus_info, record);
 
     //αποθηκευση του μικροτερου κλειδιου του νεου block δεδομενων
-    int key_to_move_up = get_metadata_datanode(fd, new_data_node)->minKey;
+    int key_to_move_up = get_metadata_datanode(fd, new_data_node_id)->minKey;
 
+    BF_Block* new_data_node;
+    BF_Block_Init(&new_data_node);
+    CALL_BF(BF_GetBlock(fd, new_data_node_id, new_data_node));
+    BPLUS_DATA_NODE* new_metadata_datanode = get_metadata_datanode(fd, new_data_node_id);
 
     //αν ο γονεας index node εχει χωρο, προσθηκη κλειδιου σε αυτο
     if(is_full_indexnode(fd, parent_id) == false){
+
+      new_metadata_datanode->parent_id = parent_id;
 
       insert_key_indexnode(fd, parent_id, bplus_info, key_to_move_up, data_block_to_insert);
     }
 
     //αν δεν εχει χωρο σπαμε το index node
     else{
+
       printf("SPLITTING INDEX NODE %d\n", parent_id);
-      split_index_node(fd, bplus_info, parent_id, key_to_move_up, new_data_node);
+      // split_index_node(fd, bplus_info, parent_id, key_to_move_up, new_data_node_id);
     }
 
 
