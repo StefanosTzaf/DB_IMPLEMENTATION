@@ -140,6 +140,7 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
   //αν δεν υπαρχει χωρος πρεπει να το σπασουμε
   else{  
+    printf("splitting data node %d\n", data_block_to_insert);
 
     int parent_id;
 
@@ -164,13 +165,14 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
     //αν ο γονεας index node εχει χωρο, προσθηκη κλειδιου σε αυτο
     if(is_full_indexnode(fd, parent_id) == false){
-      
+
       insert_key_indexnode(fd, parent_id, bplus_info, key_to_move_up, data_block_to_insert);
     }
 
     //αν δεν εχει χωρο σπαμε το index node
     else{
-      // split_index_node(fd, bplus_info, parent_id, key_to_move_up, new_data_node);
+      printf("SPLITTING INDEX NODE %d\n", parent_id);
+      split_index_node(fd, bplus_info, parent_id, key_to_move_up, new_data_node);
     }
 
 
@@ -212,35 +214,35 @@ int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_ro
   bool is_max = true;
 
   //θελουμε να πηγαινει απο κλειδι σε κλειδι
-  for(int i = 1; i <= (2 * num_of_keys + 1) ; i+= 2){
-
+  for(int i = 1; i < (2 * num_of_keys + 1) ; i+= 2){
+ 
     memcpy(&current_key, data + sizeof(BPLUS_INDEX_NODE) + i * sizeof(int), sizeof(int));
-
+    
     if(key < current_key){
+  
       is_max = false;
 
       memcpy(&child_id, data + sizeof(BPLUS_INDEX_NODE) + (i - 1) * sizeof(int), sizeof(int)); 
       //το block που πρεπει να ακολουθησουμε στην πορεια      
+
 
       CALL_BF(BF_GetBlock(fd, child_id, child));
   
       break;
     }
 
-    //αν φτασαμε στο τελευταιο κλειδι και δεν εχουμε βρει καποιο μικροτερο
-    else if(is_max == true){
-
-      int total_elements = 2 * num_of_keys + 1;
-
-      memcpy(&child_id, data + sizeof(BPLUS_INDEX_NODE) + (total_elements - 1) * sizeof(int), sizeof(int)); 
-
-      //αποθηκευση του δεξιου block με τιμες κλειδιων >= του τελευταιου κλειδιου που εξετασαμε
-      CALL_BF(BF_GetBlock(fd, child_id, child));
-
-      break;
-    } 
-
   }
+
+    //αν φτασαμε στο τελευταιο κλειδι και δεν εχουμε βρει καποιο μικροτερο
+  if(is_max == true){
+
+    int total_elements = 2 * num_of_keys + 1;
+
+    memcpy(&child_id, data + sizeof(BPLUS_INDEX_NODE) + (total_elements - 1) * sizeof(int), sizeof(int)); 
+
+    //αποθηκευση του δεξιου block με τιμες κλειδιων >= του τελευταιου κλειδιου που εξετασαμε
+    CALL_BF(BF_GetBlock(fd, child_id, child));
+  } 
 
 
 

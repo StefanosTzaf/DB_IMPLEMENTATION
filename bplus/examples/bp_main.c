@@ -7,7 +7,7 @@
 #include "bp_datanode.h"
 #include "bp_indexnode.h"
 
-#define RECORDS_NUM 14 // you can change it if you want
+#define RECORDS_NUM 23 // you can change it if you want
 #define FILE_NAME "data.db"
 
 #define CALL_OR_DIE(call)     \
@@ -28,7 +28,10 @@ int main()
 {
   
   printf("max num of records per block %ld\n", (BF_BLOCK_SIZE - sizeof(BPLUS_DATA_NODE)) / sizeof(Record));
-
+  
+  int total_elements = (BF_BLOCK_SIZE - sizeof(BPLUS_INDEX_NODE)) / sizeof(int);
+  int max_keys = (total_elements - 1) / 2;
+  printf("max num of keys in indexnode is %d\n", max_keys);
   // test_insert_rec_in_datanode();
 
 
@@ -51,7 +54,6 @@ void insertEntries(){
     record = randomRecord();
     BP_InsertEntry(file_desc, info, record);
   }
-
 
 
   printf("block counter: %d\n", info->num_of_blocks);
