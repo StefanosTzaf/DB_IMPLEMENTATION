@@ -103,6 +103,7 @@ int BP_CloseFile(int file_desc, BPLUS_INFO* info){
 
 int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
+
   //Αν το B+ δέντρο είναι κενό, δημιουργούμε ένα νέο block δεδομένων μονο
   //το οποιο αποτελει και τη ριζα του δεντρου
   if(bplus_info->height == 0){
@@ -123,7 +124,6 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
   //Εύρεση του block δεδομένων που πρεπει να γίνει η εισαγωγή
   int data_block_to_insert = BP_FindDataBlockToInsert(fd, record.id, root, height_of_current_root);
-
 
   BF_Block* block;
   BF_Block_Init(&block);
@@ -208,33 +208,39 @@ int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_ro
   BF_Block* child;
   BF_Block_Init(&child);
   
+  bool is_max = true;
 
   //θελουμε να πηγαινει απο κλειδι σε κλειδι
   for(int i = 1; i <= (2 * num_of_keys + 1) ; i+= 2){
 
     memcpy(&current_key, data + sizeof(BPLUS_INDEX_NODE) + i * sizeof(int), sizeof(int));
 
-      printf("child_id: %d\n", child_id);
     if(key < current_key){
+      is_max = false;
+
       memcpy(&child_id, data + sizeof(BPLUS_INDEX_NODE) + (i - 1) * sizeof(int), sizeof(int)); 
       //το block που πρεπει να ακολουθησουμε στην πορεια      
-        
+
       CALL_BF(BF_GetBlock(fd, child_id, child));
   
       break;
     }
 
     //αν φτασαμε στο τελευταιο κλειδι και δεν εχουμε βρει καποιο μικροτερο
-    else if(i == 2 * num_of_keys - 1){
+    else if(is_max == true){
 
-      memcpy(&child_id, data + sizeof(BPLUS_INDEX_NODE) + i * sizeof(int), sizeof(int)); 
+      int total_elements = 2 * num_of_keys + 1;
+
+      memcpy(&child_id, data + sizeof(BPLUS_INDEX_NODE) + (total_elements - 1) * sizeof(int), sizeof(int)); 
 
       //αποθηκευση του δεξιου block με τιμες κλειδιων >= του τελευταιου κλειδιου που εξετασαμε
       CALL_BF(BF_GetBlock(fd, child_id, child));
+
       break;
     } 
 
   }
+
 
 
   //αναδρομική κλήση
