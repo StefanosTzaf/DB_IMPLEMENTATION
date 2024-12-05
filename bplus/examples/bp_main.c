@@ -7,7 +7,7 @@
 #include "bp_datanode.h"
 #include "bp_indexnode.h"
 
-#define RECORDS_NUM 200 // you can change it if you want
+#define RECORDS_NUM 11 // you can change it if you want
 #define FILE_NAME "data.db"
 
 #define CALL_OR_DIE(call)     \
@@ -29,11 +29,11 @@ int main()
   
   printf("max num of records per block %ld\n", (BF_BLOCK_SIZE - sizeof(BPLUS_DATA_NODE)) / sizeof(Record));
 
-  test_insert_rec_in_datanode();
+  // test_insert_rec_in_datanode();
 
 
   
-  // insertEntries();
+  insertEntries();
   // findEntries();
 
   ////////////////////////////////////////////////
@@ -49,8 +49,18 @@ void insertEntries(){
   for (int i = 0; i < RECORDS_NUM; i++)
   {
     record = randomRecord();
-    BP_InsertEntry(file_desc,info, record);
+    BP_InsertEntry(file_desc, info, record);
   }
+
+  printf("block counter: %d\n", info->num_of_blocks);
+  printf("height: %d\n\n", info->height);
+
+  print_data_node(file_desc, 1);
+  print_index_node(file_desc, 2);
+  print_data_node(file_desc, 3);
+
+  printf("block to insert 1000 %d\n", BP_FindDataBlockToInsert(file_desc, 1000, 2, 2));
+
   BP_CloseFile(file_desc,info);
   BF_Close();
 }
@@ -171,6 +181,7 @@ void test_insert_rec_in_datanode(){
   print_data_node(file_desc, split2);
   print_index_node(file_desc, index_node);
   print_index_node(file_desc, index2);
+
 
   BP_CloseFile(file_desc,info);
   BF_Close();

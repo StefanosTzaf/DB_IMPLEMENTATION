@@ -8,6 +8,7 @@
 #include "bp_datanode.h"
 
 // δημιουργει ενα νεο μπλοκ δεδομενων και προσθετει τα μεταδεδομενα του
+//  επιστρεφει το id του νεου μπλοκ
 int create_data_node(int file_desc, BPLUS_INFO* bplus_info){
     
     BF_Block* block;
@@ -22,6 +23,7 @@ int create_data_node(int file_desc, BPLUS_INFO* bplus_info){
     data_node.block_id = bplus_info->num_of_blocks; //η αριθμηση ξεκιναει απο το 0 αρα αν 
     //εχουμε 2 μπλοκ συνολο, το id του νεου θα ειναι 2
     data_node.next_block = -1; //αρχικα δεν υπαρχει επομενο block
+    data_node.parent_id = -1;
 
     memcpy(data, &data_node, sizeof(BPLUS_DATA_NODE)); //αντιγραφη μεταδεδομενων στο block
 
@@ -135,6 +137,7 @@ void insert_rec_in_datanode(int fd, int node, BPLUS_INFO* bplus_info, Record new
 
 
 // χωριζει ενα μπλοκ δεδομενων στα δυο, μεταφεροντας τις μισες εγγραφες στο νεο block 
+// επιστρεφει το id του νεου block
 int split_data_node(int fd, int id, BPLUS_INFO* bplus_info, Record new_rec){
 
     //######### Αρχικο block ##########//    

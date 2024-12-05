@@ -20,6 +20,7 @@ int create_index_node(int file_desc, BPLUS_INFO* bplus_info){
     BPLUS_INDEX_NODE index_node;
     index_node.num_keys = 0;
     index_node.block_id = bplus_info->num_of_blocks;
+    index_node.parent_id = -1;
 
     //αντιγραφη των μεταδεδομενων στο block
     memcpy(data, &index_node, sizeof(BPLUS_INDEX_NODE));
@@ -141,8 +142,17 @@ void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int
 
 }
 
+// σπαει ενα block ευρετηριου σε δυο και εισαγει το μεσαιο κλειδι στον γονεα
+// δεχεται ως παραμετρους το αρχειο, τα μεταδεδομενα του bplus, το id του block που θα σπασει, το κλειδι που θα εισαχθει 
+// και το id του block που πρεπει να εισαχθει ως δεικτης
 int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_to_insert, int child_id){
     
+    // data block στο οποιο θα δειχνει ο νεος δεικτης που θα εισαχθει 
+    BF_Block* child;
+    BF_Block_Init(&child);
+    CALL_BF(BF_GetBlock(fd, child_id, child));
+    BPLUS_DATA_NODE* metadata_child = get_metadata_datanode(fd, child_id);
+
     //######## αρχικο block ευρετηριου ##########//
     BF_Block* block1;
     BF_Block_Init(&block1);
@@ -206,6 +216,16 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
         pos = metadata1->num_keys; //πρεπει να μπει στη τελευταια θεση του πινακα
     }
 
+    //ενημερωνουμε το parent id του block που εισαγεται ως δεικτης
+    if(pos < split_point){
+        metadata_child->parent_id = index_node_id;
+    }
+    else{
+        metadata_child->parent_id = new_index_node_id;
+    }
+
+
+
     //μετακινηση κλειδιων απο τη θεση pos και μετα κατα μια θεση δεξια
     for(int i = metadata1->num_keys; i > pos; i--){
         keys[i] = keys[i - 1];
@@ -267,19 +287,58 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
     }
 
 
+
     BF_Block_SetDirty(block1);
     CALL_BF(BF_UnpinBlock(block1));
+    BF_Block_Destroy(&block1);
+    
     BF_Block_SetDirty(block2);
     CALL_BF(BF_UnpinBlock(block2));
-    BF_Block_Destroy(&block1);
     BF_Block_Destroy(&block2);
+    
+    BF_Block_SetDirty(child);
+    CALL_BF(BF_UnpinBlock(child));
+    BF_Block_Destroy(&child);
+
+
+    //############ Διαχειριση του γονεα #############//
+    if(metadata1->parent_id == -1){
+        int new_root_id = create_index_node(fd, bplus_info);
+        BF_Block* new_root;
+        BF_Block_Init(&new_root);
+        CALL_BF(BF_GetBlock(fd, new_root_id, new_root));
+
+        insert_key_indexnode(fd, new_root_id, bplus_info, key_to_move_up, index_node_id);
+
+        bplus_info->root_block = new_root_id;
+        bplus_info->height++;
+
+        metadata1->parent_id = new_root_id;
+        metadata2->parent_id = new_root_id;
+
+        BF_Block_SetDirty(new_root);
+        CALL_BF(BF_UnpinBlock(new_root));
+        BF_Block_Destroy(&new_root);
+
+    }
+
+    else{
+        //αν ο γονεας εχει χωρο, εισαγωγη εκει
+        if(is_full_indexnode(fd, metadata1->parent_id) == false){
+            insert_key_indexnode(fd, metadata1->parent_id, bplus_info, key_to_move_up, new_index_node_id);
+        }
+        //αλλιως αναδρομικη κληση της split_index_node
+        else{
+            return split_index_node(fd, bplus_info, metadata1->parent_id, key_to_move_up, new_index_node_id);
+        }
+    }
  
     return new_index_node_id;
 
 }
 
 
-
+// εκτυπωνει τα μεταδεδομενα ενος index node καθως και τους δεικτες με τα κλειδια του
 void print_index_node(int fd, int id){
     BF_Block* block;
     BF_Block_Init(&block);
@@ -311,4 +370,30 @@ void print_index_node(int fd, int id){
 
     CALL_BF(BF_UnpinBlock(block));
     BF_Block_Destroy(&block);
+}
+
+// επιστρεφει true αν το index node με id ειναι γεματο και false αν δεν ειναι
+bool is_full_indexnode(int fd, int id){
+    
+    bool is_full = false;
+
+    BF_Block* block;
+    BF_Block_Init(&block);
+    CALL_BF(BF_GetBlock(fd, id, block));
+
+    void* data = BF_Block_GetData(block);
+    BPLUS_INDEX_NODE* metadata = get_metadata_indexnode(fd, id);
+
+    int total_elements = (BF_BLOCK_SIZE - sizeof(BPLUS_INDEX_NODE)) / sizeof(int);
+    int max_keys = (total_elements - 1) / 2;
+
+    if(metadata->num_keys == max_keys){
+        is_full = true;
+    }
+    
+
+    CALL_BF(BF_UnpinBlock(block));
+    BF_Block_Destroy(&block);
+    
+    return is_full;
 }

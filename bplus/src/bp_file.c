@@ -122,23 +122,57 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
   int height_of_current_root = bplus_info->height;
 
   //Εύρεση του block δεδομένων που πρεπει να γίνει η εισαγωγή
-  int data_block_id = BP_FindDataBlockToInsert(fd, record.id, root, height_of_current_root);
+  int data_block_to_insert = BP_FindDataBlockToInsert(fd, record.id, root, height_of_current_root);
+
 
   BF_Block* block;
   BF_Block_Init(&block);
-  CALL_BF(BF_GetBlock(fd, data_block_id, block));
+  CALL_BF(BF_GetBlock(fd, data_block_to_insert, block));
 
-  BPLUS_DATA_NODE* data_node = get_metadata_datanode(fd, data_block_id);
+  BPLUS_DATA_NODE* metadata_datanode = get_metadata_datanode(fd, data_block_to_insert);
 
   //αν υπαρχει χωρος στο block δεδομενων, εισαγουμε την εγγραφη σε αυτο
-  if(data_node->num_records < bplus_info->max_records_per_block){
-    insert_rec_in_datanode(fd, data_block_id, bplus_info, record);
+  if(metadata_datanode->num_records < bplus_info->max_records_per_block){
+
+    insert_rec_in_datanode(fd, data_block_to_insert, bplus_info, record);
+
   }
 
   //αν δεν υπαρχει χωρος πρεπει να το σπασουμε
   else{  
-    
-    split_data_node(fd, data_block_id, bplus_info, record);
+
+    int parent_id;
+
+    //αν δεν υπαρχει γονεας index node πρεπει να δημιουργηθει
+    if(metadata_datanode->parent_id == -1){
+      parent_id = create_index_node(fd, bplus_info);
+      bplus_info->height++;
+      bplus_info->root_block = parent_id;
+
+      metadata_datanode->parent_id = parent_id;
+    }
+
+    else{
+      parent_id = metadata_datanode->parent_id;
+    }
+
+    int new_data_node = split_data_node(fd, data_block_to_insert, bplus_info, record);
+
+    //αποθηκευση του μικροτερου κλειδιου του νεου block δεδομενων
+    int key_to_move_up = get_metadata_datanode(fd, new_data_node)->minKey;
+
+
+    //αν ο γονεας index node εχει χωρο, προσθηκη κλειδιου σε αυτο
+    if(is_full_indexnode(fd, parent_id) == false){
+      insert_key_indexnode(fd, parent_id, bplus_info, key_to_move_up, data_block_to_insert);
+    }
+
+    //αν δεν εχει χωρο σπαμε το index node
+    else{
+      split_index_node(fd, bplus_info, parent_id, key_to_move_up, new_data_node);
+    }
+
+
   }
   
 
@@ -164,6 +198,7 @@ int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_ro
   BF_Block_Init(&block);
   CALL_BF(BF_GetBlock(fd, root, block));
 
+
   void* data = BF_Block_GetData(block);
   int num_of_keys = get_metadata_indexnode(fd, root)->num_keys;
 
@@ -176,14 +211,14 @@ int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_ro
 
   //θελουμε να πηγαινει απο κλειδι σε κλειδι
   for(int i = 1; i <= (2 * num_of_keys + 1) ; i+= 2){
-    
+
     memcpy(&current_key, data + sizeof(BPLUS_INDEX_NODE) + i * sizeof(int), sizeof(int));
 
+      printf("child_id: %d\n", child_id);
     if(key < current_key){
-  
       memcpy(&child_id, data + sizeof(BPLUS_INDEX_NODE) + (i - 1) * sizeof(int), sizeof(int)); 
-
       //το block που πρεπει να ακολουθησουμε στην πορεια      
+        
       CALL_BF(BF_GetBlock(fd, child_id, child));
   
       break;
