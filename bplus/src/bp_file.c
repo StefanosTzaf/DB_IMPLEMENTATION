@@ -164,12 +164,13 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
     //αν ο γονεας index node εχει χωρο, προσθηκη κλειδιου σε αυτο
     if(is_full_indexnode(fd, parent_id) == false){
+      
       insert_key_indexnode(fd, parent_id, bplus_info, key_to_move_up, data_block_to_insert);
     }
 
     //αν δεν εχει χωρο σπαμε το index node
     else{
-      split_index_node(fd, bplus_info, parent_id, key_to_move_up, new_data_node);
+      // split_index_node(fd, bplus_info, parent_id, key_to_move_up, new_data_node);
     }
 
 

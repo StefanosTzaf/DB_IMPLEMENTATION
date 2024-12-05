@@ -7,7 +7,7 @@
 #include "bp_datanode.h"
 #include "bp_indexnode.h"
 
-#define RECORDS_NUM 13 // you can change it if you want
+#define RECORDS_NUM 14 // you can change it if you want
 #define FILE_NAME "data.db"
 
 #define CALL_OR_DIE(call)     \
@@ -52,26 +52,13 @@ void insertEntries(){
     BP_InsertEntry(file_desc, info, record);
   }
 
-  // Record res;
-  // res.id = 1000;
-  // char name[15] = "John";
-  // char surname[15] = "Doe";
-  // char city[15] = "Athens";
-  // strcpy(res.name, name);
-  // strcpy(res.surname, surname);
-  // strcpy(res.city, city);
-
-
-  // int pos = BP_FindDataBlockToInsert(file_desc, 1000, 2, 2);
-  // printf("block to insert 1000 %d\n", BP_FindDataBlockToInsert(file_desc, 1000, 2, 2));
-
-  // BP_InsertEntry(file_desc, info, res);
 
 
   printf("block counter: %d\n", info->num_of_blocks);
   printf("height: %d\n\n", info->height);
 
   print_data_node(file_desc, 1);
+  print_data_node(file_desc, 4);
   print_index_node(file_desc, 2);
   print_data_node(file_desc, 3);
 

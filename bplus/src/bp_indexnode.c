@@ -89,7 +89,6 @@ void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int
     //αν το μπλοκ ευρετηριου ειναι κενο, δηλαδη δημιουργηθηκε νεο μπλοκ ευρετηριου
     //μετα απο split ενος block δεδομενων
     if(metadata_index_node->num_keys == 0){
-   
         memcpy(data + sizeof(BPLUS_INDEX_NODE) + sizeof(int), &key, sizeof(int)); //το κλειδι
         memcpy(data + sizeof(BPLUS_INDEX_NODE), &left_child_id, sizeof(int)); //αριστερα του κλειδιου
         memcpy(data + sizeof(BPLUS_INDEX_NODE) + 2 * sizeof(int), &right_child, sizeof(int)); //δεξια του κλειδιου
@@ -105,7 +104,7 @@ void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int
 
             //αν το νεο κλειδι ειναι μικροτερο απο το κλειδι της θεσης i πρεπει να μπει πριν απο αυτο
             if(key < current_key){
-                
+        
                 is_max = false;
 
                 //μετακινηση των κλειδιων και των δεικτων κατα μια θεση δεξια
@@ -117,13 +116,16 @@ void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int
                 memcpy(tempSrc, &key, sizeof(int));
 
                 //εισαγωγη νεου δεικτη δεξια απο το κλειδι
-                memcpy(tempSrc + sizeof(int), &left_child_id, sizeof(int));
+                memcpy(tempSrc + sizeof(int), &right_child, sizeof(int));
+
+                break;
             }
            
         }
 
         //αν ειναι το μεγιστο κλειδι, πρεπει να το προσθεσουμε στο τελος μαζι με εναν δεικτη στο δεξι παιδι
         if(is_max == true){
+
             memcpy(data + sizeof(BPLUS_INDEX_NODE) + (2 * metadata_index_node->num_keys + 1) * sizeof(int), &key, sizeof(int));
             memcpy(data + sizeof(BPLUS_INDEX_NODE) + (2 * metadata_index_node->num_keys + 2) * sizeof(int), &right_child, sizeof(int));
         }    
