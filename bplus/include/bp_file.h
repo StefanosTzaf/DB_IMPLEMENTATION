@@ -58,7 +58,7 @@ int BP_InsertEntry(int file_desc,BPLUS_INFO* bplus_info, Record record);
  * το `result` σε `nullptr` και επιστρέφει `-1` για να υποδείξει αποτυχία.**/
 int BP_GetEntry(int file_desc, BPLUS_INFO* header_info, int id, Record** result);
 
-
+// Επιστρεφει το block id στο οποιο θα πρεπει να γινει η εισαγωγη του key
 int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_root);
 
 

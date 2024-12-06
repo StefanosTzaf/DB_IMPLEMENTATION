@@ -117,6 +117,12 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
     return id_datanode; //επιστροφη του block id που εγινε η εισαγωγη 
   }
 
+  //αν υπαρχει ηδη εγγραφη με το ιδιο id
+  if(BP_GetEntry(fd, bplus_info, record.id, NULL) == 0){
+    printf("Record with id %d already exists\n", record.id);
+    return -1;
+  }
+
 
   //Αν το B+ δέντρο δεν είναι κενό
   int root = bplus_info->root_block;
@@ -189,10 +195,36 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
   return 0;
 }
 
-int BP_GetEntry(int file_desc,BPLUS_INFO *bplus_info, int value,Record** record){
+int BP_GetEntry(int file_desc, BPLUS_INFO *bplus_info, int value, Record** record){
+  //βρισκουμε σε ποιο block δεδομενων θα επρεπε να βρισκεται το κλειδι
+
+  int height = bplus_info->height;
+  int root = bplus_info->root_block;
+  int block_with_rec = BP_FindDataBlockToInsert(file_desc, value, root, height);
   
-  
-  return 0;
+  BF_Block* block;
+  BF_Block_Init(&block);
+  CALL_BF(BF_GetBlock(file_desc, block_with_rec, block));
+
+  BPLUS_DATA_NODE* metadata_datanode = get_metadata_datanode(file_desc, block_with_rec);
+  char* data = BF_Block_GetData(block);
+
+  int num_of_recs = metadata_datanode->num_records;
+
+  for(int i = 0; i < num_of_recs; i++){
+    
+    Record* rec = (Record*)(data + sizeof(BPLUS_DATA_NODE) + i * sizeof(Record));
+    //αν βρεθηκε η εγγραφη, επιστρεφουμε 0 και το record δειχνει στην εγγραφη αυτη
+    if(rec->id == value){
+      // *record = rec;
+      return 0;
+    }
+  }
+
+  // //Αν δεν βρεθηκε τετοια εγγραφη
+  // *record = NULL;
+
+  return -1;
 }
 
 
