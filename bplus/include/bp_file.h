@@ -6,7 +6,7 @@
 
 
 typedef struct {
-    int file_desc;              // 
+    int file_desc;              // file descriptor αρχειου 
     int root_block;             // μπλοκ ριζας
     int height;                 // υψος B+ tree
     int record_size;            // μεγεθος μιας εγγραφης

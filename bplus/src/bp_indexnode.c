@@ -64,9 +64,10 @@ BPLUS_INDEX_NODE* get_metadata_indexnode(int file_desc, int block_id){
 }
 
 
-//προσθηκη ζευγους κλειδι-δεικτης σε ενα μπλοκ ευρετηριου
-//η συναρτηση καλειται με το id του block που σπαει στα δυο, δηλαδη το αριστερο παιδι
-//και κλειδι key, το μικροτερο του νεου block δηλαδη του δεξιου
+// Προσθηκη ζευγους κλειδι-δεικτης σε ενα μπλοκ ευρετηριου
+// Η συναρτηση δεχεται το id του block που σπαει(left_child_id), 
+// καθως και το id του block που δημιουργειται κατα το split(right_child_id)
+// Το κλειδι key ειναι το μικροτερο του νεου block(right_child_id) και ειναι αυτο που πρεπει να εισαχθει ως δεικτης.
 void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int key, int left_child_id, int right_child_id){
 
     BF_Block* block;
@@ -133,8 +134,8 @@ void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int
 
 }
 
-// σπαει ενα block ευρετηριου σε δυο και εισαγει το μεσαιο κλειδι στον γονεα
-// δεχεται ως παραμετρους το αρχειο, τα μεταδεδομενα του bplus, το id του block που θα σπασει, το κλειδι που θα εισαχθει 
+// σπαει ενα block ευρετηριου σε δυο και εισαγει το μεσαιο κλειδι στον γονεα.
+// Δεχεται ως παραμετρους το αρχειο, τα μεταδεδομενα του bplus, το id του block που θα σπασει, το κλειδι που θα εισαχθει 
 // και το id του block που πρεπει να εισαχθει ως δεικτης
 int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_to_insert, int child_id){
     
