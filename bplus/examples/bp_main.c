@@ -37,7 +37,7 @@ int main()
 
   
   insertEntries();
-  // findEntries();
+  findEntries();
 
   ////////////////////////////////////////////////
   
@@ -80,10 +80,10 @@ void findEntries(){
   Record tmpRec;  //Αντί για malloc
   Record* result=&tmpRec;
   
-  int id=159; 
+  int id = 336; 
   printf("Searching for: %d\n",id);
-  BP_GetEntry( file_desc,info, id,&result);
-  if(result!=NULL)
+  BP_GetEntry(file_desc, info, id, &result);
+  if(result != NULL)
     printRecord(*result);
 
   BP_CloseFile(file_desc,info);

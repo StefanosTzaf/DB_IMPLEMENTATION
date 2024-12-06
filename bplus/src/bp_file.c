@@ -118,8 +118,12 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
   }
 
   //αν υπαρχει ηδη εγγραφη με το ιδιο id
-  if(BP_GetEntry(fd, bplus_info, record.id, NULL) == 0){
-    printf("Record with id %d already exists\n", record.id);
+  Record tmpRec;  //Αντί για malloc
+  Record* result = &tmpRec;
+  if(BP_GetEntry(fd, bplus_info, record.id, &result) == 0){
+    printf("Record already exists:\n" );
+    printRecord(*result);
+
     return -1;
   }
 
@@ -216,13 +220,19 @@ int BP_GetEntry(int file_desc, BPLUS_INFO *bplus_info, int value, Record** recor
     Record* rec = (Record*)(data + sizeof(BPLUS_DATA_NODE) + i * sizeof(Record));
     //αν βρεθηκε η εγγραφη, επιστρεφουμε 0 και το record δειχνει στην εγγραφη αυτη
     if(rec->id == value){
-      // *record = rec;
+      **record = *rec;
+
+      BF_UnpinBlock(block);
+      BF_Block_Destroy(&block);
       return 0;
     }
   }
 
   // //Αν δεν βρεθηκε τετοια εγγραφη
-  // *record = NULL;
+  *record = NULL;
+
+  BF_UnpinBlock(block);
+  BF_Block_Destroy(&block);
 
   return -1;
 }
