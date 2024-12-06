@@ -21,6 +21,7 @@ int create_index_node(int file_desc, BPLUS_INFO* bplus_info){
     index_node.num_keys = 0;
     index_node.block_id = bplus_info->num_of_blocks;
     index_node.parent_id = -1;
+    index_node.is_data_node = 0;
 
     //αντιγραφη των μεταδεδομενων στο block
     memcpy(data, &index_node, sizeof(BPLUS_INDEX_NODE));

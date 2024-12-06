@@ -24,6 +24,7 @@ int create_data_node(int file_desc, BPLUS_INFO* bplus_info){
     //εχουμε 2 μπλοκ συνολο, το id του νεου θα ειναι 2
     data_node.next_block = -1; //αρχικα δεν υπαρχει επομενο block
     data_node.parent_id = -1;
+    data_node.is_data_node = 1; //ειναι block δεδομενων
 
     memcpy(data, &data_node, sizeof(BPLUS_DATA_NODE)); //αντιγραφη μεταδεδομενων στο block
 

@@ -61,6 +61,11 @@ int BP_GetEntry(int file_desc, BPLUS_INFO* header_info, int id, Record** result)
 // Επιστρεφει το block id στο οποιο θα πρεπει να γινει η εισαγωγη του key
 int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_root);
 
+void BP_PrintBlock(int fd, int block_id, BPLUS_INFO* bplus_info);
+
+void BP_PrintTree(int fd, BPLUS_INFO* bplus_info);
+
+
 
 
 

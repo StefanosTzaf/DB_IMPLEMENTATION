@@ -19,6 +19,7 @@
 
 
 typedef struct {
+    int is_data_node;
     int num_records; // αριθμος εγγραφων
     int block_id;    // id του block
     int next_block;  // id του επομενου block δεδομενων

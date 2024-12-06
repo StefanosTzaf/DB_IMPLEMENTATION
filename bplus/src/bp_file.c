@@ -312,3 +312,29 @@ int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_ro
     
 }
 
+
+void BP_PrintBlock(int fd, int block_id, BPLUS_INFO* bplus_info){
+  BF_Block* block;
+  BF_Block_Init(&block);
+  CALL_BF(BF_GetBlock(fd, block_id, block));
+
+  char* data = BF_Block_GetData(block);
+
+  int* is_datanode;
+  is_datanode = (int*)(data);
+
+  if(*is_datanode == 1){
+    print_data_node(fd, block_id);
+  }
+
+  else{
+    print_index_node(fd, block_id);
+  }
+}
+
+
+void BP_PrintTree(int fd, BPLUS_INFO* bplus_info){
+  for(int i = 0; i < bplus_info->num_of_blocks; i++){
+    BP_PrintBlock(fd, i, bplus_info);
+  }
+}
