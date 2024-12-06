@@ -7,7 +7,7 @@
 #include "bp_datanode.h"
 #include "bp_indexnode.h"
 
-#define RECORDS_NUM 100 // you can change it if you want
+#define RECORDS_NUM 500 // you can change it if you want
 #define FILE_NAME "data.db"
 
 #define CALL_OR_DIE(call)     \
@@ -60,10 +60,15 @@ void insertEntries(){
   printf("height: %d\n\n", info->height);
 
   // print_data_node(file_desc, 1);
-  print_data_node(file_desc, 4);
-  print_index_node(file_desc, 2);
+  // print_data_node(file_desc, 4);
+  // print_index_node(file_desc, 2);
   // print_data_node(file_desc, 3);
-  print_data_node(file_desc, 16);
+  // print_data_node(file_desc, 16);
+
+  int root = info->root_block;
+  print_index_node(file_desc, root);
+  // print_index_node(file_desc, 2);
+  // print_index_node(file_desc, 65);
 
 
   BP_CloseFile(file_desc,info);
@@ -80,7 +85,7 @@ void findEntries(){
   Record tmpRec;  //Αντί για malloc
   Record* result=&tmpRec;
   
-  int id = 336; 
+  int id = 159; 
   printf("Searching for: %d\n",id);
   BP_GetEntry(file_desc, info, id, &result);
   if(result != NULL)
@@ -167,25 +172,25 @@ void test_insert_rec_in_datanode(){
   insert_rec_in_datanode(file_desc, left_id, info, rec5);
 
 
-  int index_node = create_index_node(file_desc, info);
-  int right_id = split_data_node(file_desc, left_id, info, rec20);
-  insert_key_indexnode(file_desc, index_node, info, 5, left_id);
+  // int index_node = create_index_node(file_desc, info);
+  // int right_id = split_data_node(file_desc, left_id, info, rec20);
+  // insert_key_indexnode(file_desc, index_node, info, 5, left_id);
 
-  int new_split = split_data_node(file_desc, right_id, info, rec15);
-  insert_key_indexnode(file_desc, index_node, info, 20, right_id);
+  // int new_split = split_data_node(file_desc, right_id, info, rec15);
+  // insert_key_indexnode(file_desc, index_node, info, 20, right_id);
 
-  insert_rec_in_datanode(file_desc, new_split, info, rec25);
+  // insert_rec_in_datanode(file_desc, new_split, info, rec25);
   
-  int split2 = split_data_node(file_desc, new_split, info, rec22);
+  // int split2 = split_data_node(file_desc, new_split, info, rec22);
 
-  int index2 = split_index_node(file_desc, info, index_node, 25, split2);
+  // int index2 = split_index_node(file_desc, info, index_node, 25, split2);
 
-  print_data_node(file_desc, left_id);
-  print_data_node(file_desc, right_id);
-  print_data_node(file_desc, new_split);
-  print_data_node(file_desc, split2);
-  print_index_node(file_desc, index_node);
-  print_index_node(file_desc, index2);
+  // print_data_node(file_desc, left_id);
+  // print_data_node(file_desc, right_id);
+  // print_data_node(file_desc, new_split);
+  // print_data_node(file_desc, split2);
+  // print_index_node(file_desc, index_node);
+  // print_index_node(file_desc, index2);
 
 
   BP_CloseFile(file_desc,info);

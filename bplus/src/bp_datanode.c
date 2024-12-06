@@ -136,8 +136,8 @@ void insert_rec_in_datanode(int fd, int node, BPLUS_INFO* bplus_info, Record new
 
 
 
-// χωριζει ενα μπλοκ δεδομενων στα δυο, μεταφεροντας τις μισες εγγραφες στο νεο block 
-// επιστρεφει το id του νεου block
+// Χωριζει ενα μπλοκ δεδομενων στα δυο, μεταφερει τις μισες εγγραφες στο νεο block και εισαγει τη νεα εγραφη στο καταλληλο block 
+// Τελος, επιστρεφει το id του νεου block ου δημιουργηθηκε
 int split_data_node(int fd, int id, BPLUS_INFO* bplus_info, Record new_rec){
 
     //######### Αρχικο block ##########//    

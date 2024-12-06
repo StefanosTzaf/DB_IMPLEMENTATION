@@ -67,7 +67,7 @@ BPLUS_INDEX_NODE* get_metadata_indexnode(int file_desc, int block_id){
 //προσθηκη ζευγους κλειδι-δεικτης σε ενα μπλοκ ευρετηριου
 //η συναρτηση καλειται με το id του block που σπαει στα δυο, δηλαδη το αριστερο παιδι
 //και κλειδι key, το μικροτερο του νεου block δηλαδη του δεξιου
-void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int key, int left_child_id){
+void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int key, int left_child_id, int right_child_id){
 
     BF_Block* block;
     BF_Block_Init(&block);
@@ -77,21 +77,13 @@ void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int
     void* data = BF_Block_GetData(block);
     BPLUS_INDEX_NODE* metadata_index_node = (BPLUS_INDEX_NODE*)data; //μεταδεδομενα του block
 
-    //αποθηκευση του αριστερου παιδιου στον δεικτη left_child
-    BF_Block* left_child;
-    BF_Block_Init(&left_child);
-    CALL_BF(BF_GetBlock(fd, left_child_id, left_child));
-    BPLUS_DATA_NODE* metadata_left_child = get_metadata_datanode(fd, left_child_id); //μεταδεδομενα του αριστερου παιδιου
-
-    //αποθηκευση id block δεξιου παιδιου
-    int right_child = metadata_left_child->next_block;
 
     //αν το μπλοκ ευρετηριου ειναι κενο, δηλαδη δημιουργηθηκε νεο μπλοκ ευρετηριου
     //μετα απο split ενος block δεδομενων
     if(metadata_index_node->num_keys == 0){
         memcpy(data + sizeof(BPLUS_INDEX_NODE) + sizeof(int), &key, sizeof(int)); //το κλειδι
         memcpy(data + sizeof(BPLUS_INDEX_NODE), &left_child_id, sizeof(int)); //αριστερα του κλειδιου
-        memcpy(data + sizeof(BPLUS_INDEX_NODE) + 2 * sizeof(int), &right_child, sizeof(int)); //δεξια του κλειδιου
+        memcpy(data + sizeof(BPLUS_INDEX_NODE) + 2 * sizeof(int), &right_child_id, sizeof(int)); //δεξια του κλειδιου
     }
 
     else{
@@ -116,7 +108,7 @@ void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int
                 memcpy(tempSrc, &key, sizeof(int));
 
                 //εισαγωγη νεου δεικτη δεξια απο το κλειδι
-                memcpy(tempSrc + sizeof(int), &right_child, sizeof(int));
+                memcpy(tempSrc + sizeof(int), &right_child_id, sizeof(int));
 
                 break;
             }
@@ -127,7 +119,7 @@ void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int
         if(is_max == true){
 
             memcpy(data + sizeof(BPLUS_INDEX_NODE) + (2 * metadata_index_node->num_keys + 1) * sizeof(int), &key, sizeof(int));
-            memcpy(data + sizeof(BPLUS_INDEX_NODE) + (2 * metadata_index_node->num_keys + 2) * sizeof(int), &right_child, sizeof(int));
+            memcpy(data + sizeof(BPLUS_INDEX_NODE) + (2 * metadata_index_node->num_keys + 2) * sizeof(int), &right_child_id, sizeof(int));
         }    
         
     }
@@ -138,9 +130,6 @@ void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int
     CALL_BF(BF_UnpinBlock(block));
     BF_Block_Destroy(&block);  
     
-    CALL_BF(BF_UnpinBlock(left_child));
-    BF_Block_Destroy(&left_child);
-   
 
 }
 
@@ -159,8 +148,7 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
     BF_Block* block1;
     BF_Block_Init(&block1);
     CALL_BF(BF_GetBlock(fd, index_node_id, block1));
-
-    //δεδομενα του block ευρετηριου το οποιο θελουμε να γινει split
+    
     void* data1 = BF_Block_GetData(block1);
     BPLUS_INDEX_NODE* metadata1 = get_metadata_indexnode(fd, index_node_id);
 
@@ -306,11 +294,12 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
     //############ Διαχειριση του γονεα #############//
     if(metadata1->parent_id == -1){
         int new_root_id = create_index_node(fd, bplus_info);
+        
         BF_Block* new_root;
         BF_Block_Init(&new_root);
         CALL_BF(BF_GetBlock(fd, new_root_id, new_root));
 
-        insert_key_indexnode(fd, new_root_id, bplus_info, key_to_move_up, index_node_id);
+        insert_key_indexnode(fd, new_root_id, bplus_info, key_to_move_up, index_node_id, new_index_node_id);
 
         bplus_info->root_block = new_root_id;
         bplus_info->height++;
@@ -327,7 +316,7 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
     else{
         //αν ο γονεας εχει χωρο, εισαγωγη εκει
         if(is_full_indexnode(fd, metadata1->parent_id) == false){
-            insert_key_indexnode(fd, metadata1->parent_id, bplus_info, key_to_move_up, new_index_node_id);
+            insert_key_indexnode(fd, metadata1->parent_id, bplus_info, key_to_move_up, index_node_id, new_index_node_id);
         }
         //αλλιως αναδρομικη κληση της split_index_node
         else{

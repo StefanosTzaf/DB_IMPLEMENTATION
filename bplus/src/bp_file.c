@@ -121,8 +121,8 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
   Record tmpRec;  //Αντί για malloc
   Record* result = &tmpRec;
   if(BP_GetEntry(fd, bplus_info, record.id, &result) == 0){
-    printf("Record already exists:\n" );
-    printRecord(*result);
+    // printf("Record already exists:\n" );
+    // printRecord(*result);
 
     return -1;
   }
@@ -155,6 +155,7 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
     //αν δεν υπαρχει γονεας index node πρεπει να δημιουργηθει
     if(metadata_datanode->parent_id == -1){
+
       parent_id = create_index_node(fd, bplus_info);
       bplus_info->height++;
       bplus_info->root_block = parent_id;
@@ -167,9 +168,10 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
       parent_id = metadata_datanode->parent_id;
     }
 
+    //επιστροφη νεου block δεδομενων που δημιουργηθηκε μετα το split
     int new_data_node_id = split_data_node(fd, data_block_to_insert, bplus_info, record);
 
-    //αποθηκευση του μικροτερου κλειδιου του νεου block δεδομενων
+    //αποθηκευση του μικροτερου κλειδιου του νεου block δεδομενων, που πρεπει να εισαχθει σε index node
     int key_to_move_up = get_metadata_datanode(fd, new_data_node_id)->minKey;
 
     BF_Block* new_data_node;
@@ -182,15 +184,21 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
       new_metadata_datanode->parent_id = parent_id;
 
-      insert_key_indexnode(fd, parent_id, bplus_info, key_to_move_up, data_block_to_insert);
+      insert_key_indexnode(fd, parent_id, bplus_info, key_to_move_up, data_block_to_insert,new_data_node_id);
     }
 
     //αν δεν εχει χωρο σπαμε το index node
     else{
 
       printf("SPLITTING INDEX NODE %d\n", parent_id);
-      // split_index_node(fd, bplus_info, parent_id, key_to_move_up, new_data_node_id);
+      int new_index_node = split_index_node(fd, bplus_info, parent_id, key_to_move_up, new_data_node_id);
+      // print_index_node(fd, new_index_node);
+      // print_index_node(fd, bplus_info->root_block);
     }
+
+    BF_Block_SetDirty(new_data_node);
+    CALL_BF(BF_UnpinBlock(new_data_node));
+    BF_Block_Destroy(&new_data_node);
 
 
   }
