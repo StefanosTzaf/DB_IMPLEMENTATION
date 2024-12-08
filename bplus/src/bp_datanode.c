@@ -20,8 +20,11 @@ int create_data_node(int file_desc, BPLUS_INFO* bplus_info){
 
     BPLUS_DATA_NODE data_node; //δημιουργια μεταδεδομενων του μπλοκ δεδομενων
     data_node.num_records = 0; //αρχικα δεν εχει εγγραφες
-    data_node.block_id = bplus_info->num_of_blocks; //η αριθμηση ξεκιναει απο το 0 αρα αν 
-    //εχουμε 2 μπλοκ συνολο, το id του νεου θα ειναι 2
+   
+    int count;
+    BF_GetBlockCounter(file_desc, &count);
+    data_node.block_id =  count - 1; //το id του block (-1 γιατι η αριθμηση ξεκιναει απο το 0)
+   
     data_node.next_block = -1; //αρχικα δεν υπαρχει επομενο block
     data_node.parent_id = -1;
     data_node.is_data_node = 1; //ειναι block δεδομενων
@@ -32,10 +35,6 @@ int create_data_node(int file_desc, BPLUS_INFO* bplus_info){
     BF_Block_SetDirty(block); //αφου τροποποιηθηκε το block, το κανουμε dirty
     CALL_BF(BF_UnpinBlock(block)); //δεν το χρειαζομαστε αλλο
     BF_Block_Destroy(&block); //καταστρεφουμε τον δεικτη στο block
-
-    
-    //Ενημερωση block 0 με μεταδεδομενα
-    bplus_info->num_of_blocks++; //αυξανουμε τον αριθμο των μπλοκ
 
     BF_Block* block0;
     BF_Block_Init(&block0);

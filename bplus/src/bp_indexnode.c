@@ -19,14 +19,16 @@ int create_index_node(int file_desc, BPLUS_INFO* bplus_info){
     //δημιουργια μεταδεδομενων του μπλοκ ευρετηριου
     BPLUS_INDEX_NODE index_node;
     index_node.num_keys = 0;
-    index_node.block_id = bplus_info->num_of_blocks;
+
+    int count;
+    BF_GetBlockCounter(file_desc, &count);
+    index_node.block_id =  count - 1; //το id του block (-1 γιατι η αριθμηση ξεκιναει απο το 0)
     index_node.parent_id = -1;
     index_node.is_data_node = 0;
 
     //αντιγραφη των μεταδεδομενων στο block
     memcpy(data, &index_node, sizeof(BPLUS_INDEX_NODE));
 
-    bplus_info->num_of_blocks++; //αυξανουμε τον αριθμο των μπλοκ  
     
     BF_Block_SetDirty(block); //τροποποιησαμε το block αρα το κανουμε dirty
     CALL_BF(BF_UnpinBlock(block)); //δεν το χρειαζομαστε πια

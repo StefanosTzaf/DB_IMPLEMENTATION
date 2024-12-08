@@ -51,7 +51,6 @@ int BP_CreateFile(char *fileName){
     bplus_info.key_size = sizeof(int);
     bplus_info.is_open = true;
     bplus_info.max_records_per_block = (BF_BLOCK_SIZE - sizeof(BPLUS_DATA_NODE)) / sizeof(Record);
-    bplus_info.num_of_blocks = 1; //μονο αυτο με τα μεταδεδομενα του αρχειου
 
     memcpy(data, &bplus_info, sizeof(BPLUS_INFO));
 
@@ -344,12 +343,12 @@ void BP_PrintTree(int fd, BPLUS_INFO* bplus_info){
 
   printf("---Root block: %d\n", bplus_info->root_block); 
   printf("---Height: %d\n", bplus_info->height);
-  printf("---Number of blocks: %d\n\n\n-------------------\n", bplus_info->num_of_blocks);
-  printf("Root block\n");
-  BP_PrintBlock(fd, bplus_info->root_block, bplus_info);
-  // printf("root parent")
+  printf("---parent of root: %d\n", get_metadata_indexnode(fd, bplus_info->root_block)->parent_id);
+  int count;
+  BF_GetBlockCounter(fd, &count);
+  printf("---Number of blocks: %d\n\n-------------------\n", count);
 
-  for(int i = 1; i < bplus_info->num_of_blocks; i++){
+  for(int i = 1; i < count; i++){
     BP_PrintBlock(fd, i, bplus_info);
   }
 }

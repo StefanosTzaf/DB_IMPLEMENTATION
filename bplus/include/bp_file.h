@@ -14,7 +14,6 @@ typedef struct {
 
     bool is_open;               // αν το αρχειο ειναι ανοιχτο ή οχι
     int max_records_per_block;  // μεγιστος αριθμος εγγραφων ανα block
-    int num_of_blocks;           // αριθμος block
 } BPLUS_INFO;
 
 
