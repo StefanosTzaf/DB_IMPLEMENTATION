@@ -9,7 +9,6 @@
 
 typedef struct{
     int is_data_node;
-    bool is_root; // αν ειναι ριζα (για να σταματήσει η αναδρομή στο insert)
     int num_keys; // αριθμος κλειδιων (ετσι μπορούμε να βρούμε και των αριθμό pointer)
     int block_id; // id του block
     int parent_id; // id του γονεα

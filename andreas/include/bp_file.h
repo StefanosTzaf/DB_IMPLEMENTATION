@@ -11,7 +11,6 @@ typedef struct {
     int height;                 // Height of the B+ tree
     int record_size;            // Size of each record
     int key_size;               // Size of the key used in the B+ tree
-    int first_data_block;       // Block ID of the first data block
     bool is_open;               // Whether the file is currently open
     int max_records_per_block;  // Max records in a data block for quick calculation
 } BPLUS_INFO;

@@ -49,7 +49,6 @@ int BP_CreateFile(char *fileName){
     bplus_info.height = 0;
     bplus_info.record_size = sizeof(Record);
     bplus_info.key_size = sizeof(int);
-    bplus_info.first_data_block = 1;
     bplus_info.is_open = true;
     bplus_info.max_records_per_block = (BF_BLOCK_SIZE - sizeof(BPLUS_DATA_NODE)) / sizeof(Record);
     bplus_info.num_of_blocks = 1; //μονο αυτο με τα μεταδεδομενα του αρχειου
@@ -123,7 +122,6 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
   if(BP_GetEntry(fd, bplus_info, record.id, &result) == 0){
     // printf("Record already exists:\n" );
     // printRecord(*result);
-
     return -1;
   }
 
@@ -137,6 +135,7 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
   BF_Block* block;
   BF_Block_Init(&block);
+  //αποθηκευση του block στο οποιο πρεπει να γινει εισαγωγη, στον δεικτη block
   CALL_BF(BF_GetBlock(fd, data_block_to_insert, block));
 
   BPLUS_DATA_NODE* metadata_datanode = get_metadata_datanode(fd, data_block_to_insert);
@@ -154,8 +153,11 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
     int parent_id;
 
     //αν δεν υπαρχει γονεας index node πρεπει να δημιουργηθει
+    //αυτο θα ισχυει μονο στην περιπτωση που εχουμε ενα μοναδικο block δεδομενων
+    //το οποιο ειναι και η ριζα του δεντρου
     if(metadata_datanode->parent_id == -1){
 
+      //δημιουργια πρωτου index node, δηλαδη της νεας ριζας
       parent_id = create_index_node(fd, bplus_info);
       bplus_info->height++;
       bplus_info->root_block = parent_id;
@@ -174,6 +176,7 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
     //αποθηκευση του μικροτερου κλειδιου του νεου block δεδομενων, που πρεπει να εισαχθει σε index node
     int key_to_move_up = get_metadata_datanode(fd, new_data_node_id)->minKey;
 
+    // Ορισμος του νεου block δεδομενων που δημιουργηθηκε απο το split
     BF_Block* new_data_node;
     BF_Block_Init(&new_data_node);
     CALL_BF(BF_GetBlock(fd, new_data_node_id, new_data_node));
@@ -184,7 +187,7 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
       new_metadata_datanode->parent_id = parent_id;
 
-      insert_key_indexnode(fd, parent_id, bplus_info, key_to_move_up, data_block_to_insert,new_data_node_id);
+      insert_key_indexnode(fd, parent_id, bplus_info, key_to_move_up, data_block_to_insert, new_data_node_id);
     }
 
     //αν δεν εχει χωρο σπαμε το index node
@@ -304,7 +307,7 @@ int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_ro
 
 
   //αναδρομική κλήση
-  --height_of_current_root;
+  height_of_current_root--;
   BF_UnpinBlock(block);
   BF_Block_Destroy(&block);
 
@@ -314,6 +317,8 @@ int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_ro
 
 
 void BP_PrintBlock(int fd, int block_id, BPLUS_INFO* bplus_info){
+
+
   BF_Block* block;
   BF_Block_Init(&block);
   CALL_BF(BF_GetBlock(fd, block_id, block));
@@ -334,7 +339,17 @@ void BP_PrintBlock(int fd, int block_id, BPLUS_INFO* bplus_info){
 
 
 void BP_PrintTree(int fd, BPLUS_INFO* bplus_info){
-  for(int i = 0; i < bplus_info->num_of_blocks; i++){
+  printf("\nPrinting B+ Tree\n\n");
+  printf("METADATA\n");
+
+  printf("---Root block: %d\n", bplus_info->root_block); 
+  printf("---Height: %d\n", bplus_info->height);
+  printf("---Number of blocks: %d\n\n\n-------------------\n", bplus_info->num_of_blocks);
+  printf("Root block\n");
+  BP_PrintBlock(fd, bplus_info->root_block, bplus_info);
+  // printf("root parent")
+
+  for(int i = 1; i < bplus_info->num_of_blocks; i++){
     BP_PrintBlock(fd, i, bplus_info);
   }
 }

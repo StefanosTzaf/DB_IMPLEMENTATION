@@ -45,7 +45,6 @@ int BP_CreateFile(char *fileName)
   //     .order = TREE_ORDER,
   //     .record_size = sizeof(Record),
   //     .key_size = sizeof(int),
-  //     .first_data_block = 1,
   //     .is_open = true,
   //     .magic_number = MAGIC_NUMBER,
   //     .max_records_per_block = MAX_RECORDS_PER_BLOCK};
