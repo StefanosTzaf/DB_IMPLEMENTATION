@@ -124,7 +124,7 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
     return -1;
   }
 
-
+  
   //Αν το B+ δέντρο δεν είναι κενό
   int root = bplus_info->root_block;
   int height_of_current_root = bplus_info->height;
@@ -185,28 +185,30 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
     if(is_full_indexnode(fd, parent_id) == false){
 
       new_metadata_datanode->parent_id = parent_id;
-
       insert_key_indexnode(fd, parent_id, bplus_info, key_to_move_up, data_block_to_insert, new_data_node_id);
     }
 
     //αν δεν εχει χωρο σπαμε το index node
     else{
 
-      printf("SPLITTING INDEX NODE %d\n", parent_id);
       int new_index_node = split_index_node(fd, bplus_info, parent_id, key_to_move_up, new_data_node_id);
-      // print_index_node(fd, new_index_node);
-      // print_index_node(fd, bplus_info->root_block);
+
     }
+
+
 
     BF_Block_SetDirty(new_data_node);
     CALL_BF(BF_UnpinBlock(new_data_node));
     BF_Block_Destroy(&new_data_node);
 
-
   }
   
 
-  return 0;
+  BF_Block_SetDirty(block);
+  CALL_BF(BF_UnpinBlock(block));
+  BF_Block_Destroy(&block);
+
+  return -1;
 }
 
 int BP_GetEntry(int file_desc, BPLUS_INFO *bplus_info, int value, Record** record){
@@ -266,9 +268,6 @@ int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_ro
 
   int child_id = 0;
   int current_key;
-
-  BF_Block* child;
-  BF_Block_Init(&child);
   
   bool is_max = true;
 
@@ -283,9 +282,6 @@ int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_ro
 
       memcpy(&child_id, data + sizeof(BPLUS_INDEX_NODE) + (i - 1) * sizeof(int), sizeof(int)); 
       //το block που πρεπει να ακολουθησουμε στην πορεια      
-
-
-      CALL_BF(BF_GetBlock(fd, child_id, child));
   
       break;
     }
@@ -299,8 +295,6 @@ int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_ro
 
     memcpy(&child_id, data + sizeof(BPLUS_INDEX_NODE) + (total_elements - 1) * sizeof(int), sizeof(int)); 
 
-    //αποθηκευση του δεξιου block με τιμες κλειδιων >= του τελευταιου κλειδιου που εξετασαμε
-    CALL_BF(BF_GetBlock(fd, child_id, child));
   } 
 
 
@@ -334,6 +328,9 @@ void BP_PrintBlock(int fd, int block_id, BPLUS_INFO* bplus_info){
   else{
     print_index_node(fd, block_id);
   }
+
+  BF_UnpinBlock(block);
+  BF_Block_Destroy(&block);
 }
 
 

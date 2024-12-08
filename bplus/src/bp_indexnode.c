@@ -147,8 +147,8 @@ void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int
 // Δεχεται ως παραμετρους το αρχειο, τα μεταδεδομενα του bplus, το id του block που θα σπασει, το κλειδι που θα εισαχθει 
 // και το id του block που πρεπει να εισαχθει ως δεικτης
 int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_to_insert, int child_id){
-    
-    // data block στο οποιο θα δειχνει ο νεος δεικτης που θα εισαχθει 
+
+    // data block στο οποιο θα δειχνει ο νεος δεικτης που θα εισαχθει
     BF_Block* child;
     BF_Block_Init(&child);
     CALL_BF(BF_GetBlock(fd, child_id, child));
@@ -158,7 +158,6 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
     BF_Block* block1;
     BF_Block_Init(&block1);
     CALL_BF(BF_GetBlock(fd, index_node_id, block1));
-    
     void* data1 = BF_Block_GetData(block1);
     BPLUS_INDEX_NODE* metadata1 = get_metadata_indexnode(fd, index_node_id);
 
@@ -167,13 +166,13 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
     BF_Block* block2;
     BF_Block_Init(&block2);
     CALL_BF(BF_GetBlock(fd, new_index_node_id, block2));
-
     void* data2 = BF_Block_GetData(block2);
     BPLUS_INDEX_NODE* metadata2 = get_metadata_indexnode(fd, new_index_node_id);
 
 
     //######## ισομοιρασμος δεικτων κ κλειδιων ########//
     int split_point = (metadata1->num_keys) / 2; 
+
 
     int pos = 0;
     bool is_max = true;
@@ -186,12 +185,15 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
     int j = 0; //index του πινακα keys
 
     //πόσα στοιχεία έχει το block πριν σπάσει
+
     int count_of_elements = 2 * metadata1->num_keys + 1;
+
     for(int i = 1; i <= count_of_elements; i += 2){
         
         //αποθηκευση κλειδιου
         memcpy(&current_key, data1 + sizeof(BPLUS_INDEX_NODE) + i * sizeof(int), sizeof(int));
         keys[j] = current_key;
+        
 
         //επειδη προσπερναμε τον πιο αριστερο δεικτη, πρεπει να τον αποθηκευσουμε ξεχωριστα
         if(i == 1){ //εαν εξεταζουμε το πρωτο κλειδι
@@ -207,11 +209,16 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
         
         if(key_to_insert < current_key){
             is_max = false;
-            pos = j; //αποθηκευση της θεσης που θα μπει το νεο κλειδι ως προς το indexing του πινακα    
         }
         j++;
     }
-
+    for(int i = 0; i < metadata1->num_keys; i++){
+        if(key_to_insert < keys[i]){
+            pos = i; //αποθηκευση της θεσης που θα μπει το νεο κλειδι ως προς το indexing του πινακα
+            break;
+        }
+    }
+    
     //αν το κλειδι ειναι το μεγιστο πρεπει να μπει στη τελευταια θεση του πινακα
      if(is_max == true){
         pos = metadata1->num_keys; 
@@ -228,14 +235,15 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
     }
 
 
-
     //μετακινηση κλειδιων απο τη θεση pos και μετα κατα μια θεση δεξια
     for(int i = metadata1->num_keys; i > pos; i--){
         keys[i] = keys[i - 1];
     }
 
+
     //εισαγωγη του νεου κλειδιου στην θεση pos
     keys[pos] = key_to_insert;
+
 
     //μετακινηση δεικτων απο τη θεση pos + 1 και μετα κατα μια θεση δεξια
     for(int i = metadata1->num_keys + 1; i > pos + 1; i--){
@@ -245,26 +253,24 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
     //εισαγωγη του νεου δεικτη στην θεση pos + 1, δηλαδη δεξια του νεου κλειδιου
     pointers[pos + 1] = child_id;
 
-
     //ευρεση μεσαιου κλειδιου, που πρεπει να ανεβει πανω
     //αν ο αριθμος κλειδιων ειναι περιττος, τοτε θα παρει ακριβως το μεσαιο κλειδι: 5, 10, 15 με split point = 1 και keys[1] = 10
     //αλλιως: 5, 10, 15, 20 με split point = 2 και keys[2] = 15
     int key_to_move_up = keys[split_point];
 
+
     //μετακινηση των κλειδιων μεχρι και το split point - 1 στο παλιο block
     for(int i = 0; i < split_point; i++){
-        
-        memcpy(data1 + sizeof(BPLUS_INDEX_NODE) + (2 * i + 1) * sizeof(int), &keys[i], sizeof(int));
-        
         //τον πρωτο δεικτη(ο αριστερος) πρεπει να μπει πριν το πρωτο κλειδι κ αμεσως μετα τα μεταδεδομενα
         if (i == 0){
             memcpy(data1 + sizeof(BPLUS_INDEX_NODE), &pointers[i], sizeof(int));
         }
-
+        
+        memcpy(data1 + sizeof(BPLUS_INDEX_NODE) + (2 * i + 1) * sizeof(int), &keys[i], sizeof(int));
         memcpy(data1 + sizeof(BPLUS_INDEX_NODE) + (2 * i + 2) * sizeof(int), &pointers[i + 1], sizeof(int));
-                
+        
     }
-
+    
     for(int i = split_point + 1; i <= metadata1->num_keys; i++){
 
         if(i == split_point + 1){
@@ -276,21 +282,22 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
         memcpy(data2 + sizeof(BPLUS_INDEX_NODE) + (2 * (i - split_point - 1) + 1) * sizeof(int), &keys[i], sizeof(int));
 
         memcpy(data2 + sizeof(BPLUS_INDEX_NODE) + (2 * (i - split_point - 1) + 2) * sizeof(int), &pointers[i + 1], sizeof(int));
-    }
-          
 
+    }
+        
+    
+    int old_num_keys = metadata1->num_keys; //αριθμος κλειδιων του παλιου block αρχικα
     //ενημερωση μεταδεδομενων των δυο index nodes
     metadata1->num_keys = split_point;
     
     //αν το split point ειναι περιττο, γιατι το αρχικο μεγεθος των κλειδιων ειναι περιττο(πχ για 7 κλειδια εχουμε split point = 3)
     //τοτε καθε block παιρνει τον ιδιο αριθμο κλειδιων, αφου το μεσαιο θα αφαιρεθει
-    if(split_point % 2 != 0){
-        metadata2->num_keys = split_point;
+    if((old_num_keys) % 2 == 0){
+        metadata2->num_keys = split_point + 1;
     }
 
-    //αλλιως το δεξι block παιρνει ενα κλειδι λιγοτερο απο το αριστερο 
     else{ 
-        metadata2->num_keys = split_point - 1;
+        metadata2->num_keys = split_point;
     }
 
 
@@ -335,10 +342,13 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
     else{
         //αν ο γονεας εχει χωρο, εισαγωγη εκει
         if(is_full_indexnode(fd, metadata1->parent_id) == false){
+
             insert_key_indexnode(fd, metadata1->parent_id, bplus_info, key_to_move_up, index_node_id, new_index_node_id);
+
         }
         //αλλιως αναδρομικη κληση της split_index_node
         else{
+
             return split_index_node(fd, bplus_info, metadata1->parent_id, key_to_move_up, new_index_node_id);
         }
     }

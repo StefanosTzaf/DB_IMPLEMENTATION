@@ -158,6 +158,7 @@ int split_data_node(int fd, int id, BPLUS_INFO* bplus_info, Record new_rec){
     BF_Block_Init(&new_block);
 
     int new_id = create_data_node(fd, bplus_info); //δημιουργια νεου block
+
     CALL_BF(BF_GetBlock(fd, new_id, new_block)); //αποθηκευση νεου block στον δεικτη new_block
     
     void* new_data = BF_Block_GetData(new_block); //δεδομενα νεου block
@@ -186,8 +187,7 @@ int split_data_node(int fd, int id, BPLUS_INFO* bplus_info, Record new_rec){
         pos = metadata->num_records;
     }
     
-    int old_num_records = metadata->num_records; //αριθμος εγγραφων του παλιου block αρχικα
-     
+    int old_num_records = metadata->num_records; //αριθμος εγγραφων του παλιου block αρχικα 
      //ανανεωση αριθμου εγγραφων του παλιου block
     if((old_num_records + 1) % 2 == 0){ //αν οι παλιες εγγραφες + την νεα ισομοιραζονται ακριβως
         metadata->num_records = split_point;
@@ -232,6 +232,13 @@ int split_data_node(int fd, int id, BPLUS_INFO* bplus_info, Record new_rec){
     
     metadata->minKey = firstRec1->id; //το minKey του παλιου block γινεται το κλειδι της πρωτης εγγραφης
     new_metadata->minKey = firstRec2->id; //το minKey του νεου block γινεται το κλειδι της πρωτης εγγραφης
+
+    BF_Block_SetDirty(block);
+    BF_Block_SetDirty(new_block);
+    BF_UnpinBlock(block);
+    BF_UnpinBlock(new_block);
+    BF_Block_Destroy(&block);
+    BF_Block_Destroy(&new_block);
 
     return new_id;
 }

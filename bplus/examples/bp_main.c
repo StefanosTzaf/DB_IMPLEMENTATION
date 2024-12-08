@@ -35,7 +35,7 @@ int main()
 
   
   insertEntries();
-  // findEntries();
+  findEntries();
 
   ////////////////////////////////////////////////
   
@@ -50,6 +50,7 @@ void insertEntries(){
   for (int i = 0; i < RECORDS_NUM; i++)
   {
     record = randomRecord();
+  
     BP_InsertEntry(file_desc, info, record);
   }
 
@@ -69,7 +70,7 @@ void findEntries(){
   Record tmpRec;  //Αντί για malloc
   Record* result=&tmpRec;
   
-  int id = 159; 
+  int id = 477; 
   printf("Searching for: %d\n",id);
   BP_GetEntry(file_desc, info, id, &result);
   if(result != NULL)
