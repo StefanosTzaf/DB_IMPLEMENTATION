@@ -1,3 +1,13 @@
+
+Printing B+ Tree
+
+METADATA
+---Root block: 66
+---Height: 3
+---parent of root: -1
+---Number of blocks: 117
+
+-------------------
 Block id: 1
 Number of records: 5
 Next block: 113
@@ -1204,13 +1214,3 @@ Parent id: 65
 (865, Evangelia, Karagiannis, Ioannina)
 (867, Eleni, Georgiou, Ioannina)
 
-
-Printing B+ Tree
-
-METADATA
----Root block: 66
----Height: 3
----parent of root: -1
----Number of blocks: 117
-
--------------------

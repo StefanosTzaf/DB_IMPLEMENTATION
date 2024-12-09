@@ -363,10 +363,7 @@ void BP_PrintBlock(int fd, int block_id, BPLUS_INFO* bplus_info){
 void BP_PrintTree(int fd, BPLUS_INFO* bplus_info){
 
   FILE* file = fopen("output.txt", "a");
-  if (file == NULL) {
-    perror("Error opening file");
-    return; // Exit if opening the file fails
-}
+
   fprintf(file, "\nPrinting B+ Tree\n\n");
   fprintf(file, "METADATA\n");
 
@@ -376,7 +373,8 @@ void BP_PrintTree(int fd, BPLUS_INFO* bplus_info){
   int count;
   BF_GetBlockCounter(fd, &count);
   fprintf(file, "---Number of blocks: %d\n\n-------------------\n", count);
-
+  fflush(file);
+  
   for(int i = 1; i < count; i++){
     BP_PrintBlock(fd, i, bplus_info);
   }
