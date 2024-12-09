@@ -142,7 +142,7 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
   BPLUS_DATA_NODE* metadata_datanode = get_metadata_datanode(fd, data_block_to_insert);
 
   //αν υπαρχει χωρος στο block δεδομενων, εισαγουμε την εγγραφη σε αυτο
-  if(metadata_datanode->num_records < bplus_info->max_records_per_block){
+  if(metadata_datanode->num_records < 3){
     insert_rec_in_datanode(fd, data_block_to_insert, bplus_info, record);
     
     return_value = data_block_to_insert;

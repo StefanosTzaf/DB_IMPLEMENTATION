@@ -2,1215 +2,184 @@
 Printing B+ Tree
 
 METADATA
----Root block: 66
----Height: 3
+---Root block: 23
+---Height: 4
 ---parent of root: -1
----Number of blocks: 117
+---Number of blocks: 28
 
 -------------------
 Block id: 1
-Number of records: 5
-Next block: 113
+Number of records: 2
+Next block: 12
 Parent id: 2
-(0, Petros, Stamatopoulos, Athina)
-(1, Sofia, Papadopoulos, Irakleio)
-(2, Anna, Kostopoulos, Volos)
-(4, Anna, Kostopoulos, Chania)
-(5, Konstantinos, Dimitriou, Larisa)
+(22, Petros, Stamatopoulos, Larisa)
+(67, Maria, Stamatopoulos, Athina)
 
 Block id: 2
-Number of keys: 55
-Parent id: 66
-1 | Key: 7 | 113 | Key: 12 | 70 | Key: 18 | 101 | Key: 23 | 42 | Key: 32 | 89 | Key: 36 | 34 | Key: 43 | 95 | Key: 50 | 28 | Key: 56 | 103 | Key: 62 | 24 | Key: 71 | 93 | Key: 87 | 48 | Key: 91 | 13 | Key: 100 | 82 | Key: 111 | 74 | Key: 123 | 52 | Key: 130 | 38 | Key: 137 | 85 | Key: 143 | 27 | Key: 154 | 90 | Key: 162 | 61 | Key: 172 | 39 | Key: 179 | 20 | Key: 190 | 43 | Key: 202 | 111 | Key: 209 | 26 | Key: 226 | 6 | Key: 244 | 30 | Key: 251 | 100 | Key: 260 | 83 | Key: 266 | 55 | Key: 275 | 21 | Key: 283 | 72 | Key: 291 | 32 | Key: 301 | 9 | Key: 308 | 87 | Key: 315 | 4 | Key: 325 | 92 | Key: 336 | 16 | Key: 348 | 50 | Key: 354 | 40 | Key: 366 | 71 | Key: 379 | 11 | Key: 386 | 105 | Key: 393 | 96 | Key: 403 | 59 | Key: 412 | 115 | Key: 418 | 46 | Key: 434 | 7 | Key: 444 | 80 | Key: 452 | 62 | Key: 460 | 108 | Key: 465 | 47 | Key: 473 | 107 | Key: 480 | 94 | 
+Number of keys: 1
+Parent id: 8
+1 | Key: 87 | 12 | 
 
 Block id: 3
-Number of records: 6
-Next block: 78
-Parent id: 65
-(649, Sofia, Dimitriou, Volos)
-(650, Dimitris, Dimitriou, Ioannina)
-(651, Sofia, Kostopoulos, Rodos)
-(653, Alexandros, Dimitriou, Rodos)
-(655, Sofia, Papadopoulos, Patra)
-(657, Eleni, Christodoulou, Athina)
-
-Block id: 4
-Number of records: 7
-Next block: 92
-Parent id: 2
-(315, Alexandros, Anagnostopoulos, Patra)
-(316, Alexandros, Stamatopoulos, Rodos)
-(317, Dimitris, Dimitriou, Irakleio)
-(320, Georgios, Karagiannis, Larisa)
-(321, Maria, Stamatopoulos, Volos)
-(323, Evangelia, Nikolaou, Larisa)
-(324, Anna, Papadopoulos, Irakleio)
-
-Block id: 5
-Number of records: 5
-Next block: 77
-Parent id: 65
-(784, Eleni, Kostopoulos, Irakleio)
-(786, Alexandros, Karagiannis, Irakleio)
-(787, Sofia, Dimitriou, Rodos)
-(788, Konstantinos, Anagnostopoulos, Irakleio)
-(789, Alexandros, Kostopoulos, Volos)
-
-Block id: 6
-Number of records: 7
-Next block: 30
-Parent id: 2
-(226, Georgios, Karagiannis, Irakleio)
-(227, Maria, Stamatopoulos, Kalamata)
-(228, Konstantinos, Papadopoulos, Chania)
-(229, Anna, Georgiou, Irakleio)
-(231, Sofia, Christodoulou, Rodos)
-(232, Konstantinos, Karagiannis, Athina)
-(235, Anna, Kostopoulos, Irakleio)
-
-Block id: 7
-Number of records: 8
-Next block: 80
-Parent id: 2
-(434, Konstantinos, Anagnostopoulos, Ioannina)
-(436, Alexandros, Karagiannis, Larisa)
-(437, Anna, Kostopoulos, Rodos)
-(439, Evangelia, Anagnostopoulos, Irakleio)
-(440, Evangelia, Georgiou, Volos)
-(441, Sofia, Anagnostopoulos, Larisa)
-(442, Alexandros, Dimitriou, Rodos)
-(443, Dimitris, Christodoulou, Ioannina)
-
-Block id: 8
-Number of records: 5
-Next block: 104
-Parent id: 65
-(841, Alexandros, Anagnostopoulos, Volos)
-(842, Konstantinos, Stamatopoulos, Chania)
-(844, Alexandros, Stamatopoulos, Kalamata)
-(845, Konstantinos, Anagnostopoulos, Chania)
-(846, Sofia, Georgiou, Irakleio)
-
-Block id: 9
-Number of records: 7
-Next block: 87
-Parent id: 2
-(301, Alexandros, Nikolaou, Patra)
-(302, Maria, Stamatopoulos, Larisa)
-(303, Eleni, Papadopoulos, Kalamata)
-(304, Evangelia, Nikolaou, Patra)
-(305, Maria, Karagiannis, Chania)
-(306, Anna, Stamatopoulos, Irakleio)
-(307, Dimitris, Kostopoulos, Athina)
-
-Block id: 10
-Number of records: 5
-Next block: 114
-Parent id: 65
-(528, Sofia, Dimitriou, Rodos)
-(529, Sofia, Anagnostopoulos, Chania)
-(530, Alexandros, Stamatopoulos, Athina)
-(532, Petros, Kostopoulos, Athina)
-(533, Maria, Papadopoulos, Athina)
-
-Block id: 11
-Number of records: 5
-Next block: 105
-Parent id: 2
-(379, Petros, Karagiannis, Ioannina)
-(380, Anna, Christodoulou, Kalamata)
-(381, Georgios, Christodoulou, Larisa)
-(382, Dimitris, Georgiou, Athina)
-(383, Georgios, Christodoulou, Kalamata)
-
-Block id: 12
-Number of records: 6
-Next block: 84
-Parent id: 65
-(746, Petros, Papadopoulos, Volos)
-(748, Sofia, Papadopoulos, Patra)
-(749, Alexandros, Mavromatis, Rodos)
-(751, Eleni, Georgiou, Volos)
-(752, Dimitris, Stamatopoulos, Athina)
-(753, Petros, Anagnostopoulos, Patra)
-
-Block id: 13
-Number of records: 5
-Next block: 82
-Parent id: 2
-(91, Alexandros, Nikolaou, Athina)
-(95, Konstantinos, Papadopoulos, Athina)
-(96, Konstantinos, Papadopoulos, Patra)
-(97, Sofia, Georgiou, Irakleio)
-(98, Georgios, Kostopoulos, Kalamata)
-
-Block id: 14
-Number of records: 8
-Next block: 44
-Parent id: 65
-(490, Evangelia, Dimitriou, Irakleio)
-(491, Dimitris, Christodoulou, Ioannina)
-(492, Evangelia, Nikolaou, Kalamata)
-(493, Evangelia, Kostopoulos, Kalamata)
-(495, Alexandros, Georgiou, Athina)
-(497, Anna, Nikolaou, Ioannina)
-(499, Sofia, Stamatopoulos, Ioannina)
-(500, Georgios, Kostopoulos, Rodos)
-
-Block id: 15
-Number of records: 5
-Next block: 97
-Parent id: 65
-(881, Alexandros, Anagnostopoulos, Irakleio)
-(882, Maria, Anagnostopoulos, Chania)
-(883, Georgios, Christodoulou, Rodos)
-(887, Alexandros, Christodoulou, Rodos)
-(888, Alexandros, Anagnostopoulos, Chania)
-
-Block id: 16
-Number of records: 8
-Next block: 50
-Parent id: 2
-(336, Maria, Nikolaou, Larisa)
-(337, Petros, Dimitriou, Athina)
-(338, Georgios, Papadopoulos, Kalamata)
-(339, Dimitris, Mavromatis, Athina)
-(340, Maria, Anagnostopoulos, Irakleio)
-(341, Anna, Anagnostopoulos, Athina)
-(343, Eleni, Christodoulou, Larisa)
-(346, Anna, Kostopoulos, Athina)
-
-Block id: 17
-Number of records: 6
-Next block: 54
-Parent id: 65
-(936, Eleni, Mavromatis, Chania)
-(937, Alexandros, Nikolaou, Chania)
-(938, Eleni, Anagnostopoulos, Larisa)
-(939, Dimitris, Anagnostopoulos, Kalamata)
-(940, Eleni, Mavromatis, Chania)
-(941, Dimitris, Georgiou, Larisa)
-
-Block id: 18
-Number of records: 5
-Next block: 88
-Parent id: 65
-(622, Petros, Stamatopoulos, Larisa)
-(623, Eleni, Christodoulou, Volos)
-(625, Maria, Dimitriou, Kalamata)
-(626, Sofia, Mavromatis, Kalamata)
-(628, Evangelia, Stamatopoulos, Rodos)
-
-Block id: 19
-Number of records: 5
-Next block: 112
-Parent id: 65
+Number of records: 3
+Next block: 20
+Parent id: 15
+(690, Evangelia, Anagnostopoulos, Volos)
 (708, Maria, Papadopoulos, Larisa)
 (709, Eleni, Christodoulou, Kalamata)
-(710, Petros, Christodoulou, Athina)
-(711, Konstantinos, Anagnostopoulos, Irakleio)
-(712, Alexandros, Anagnostopoulos, Irakleio)
 
-Block id: 20
-Number of records: 8
-Next block: 43
-Parent id: 2
-(179, Petros, Christodoulou, Irakleio)
-(180, Anna, Mavromatis, Volos)
-(183, Evangelia, Stamatopoulos, Patra)
-(184, Maria, Nikolaou, Irakleio)
-(185, Eleni, Papadopoulos, Rodos)
-(186, Evangelia, Christodoulou, Patra)
-(187, Evangelia, Anagnostopoulos, Kalamata)
-(189, Konstantinos, Mavromatis, Irakleio)
-
-Block id: 21
-Number of records: 7
-Next block: 72
-Parent id: 2
-(275, Eleni, Karagiannis, Kalamata)
-(276, Sofia, Christodoulou, Larisa)
-(277, Anna, Stamatopoulos, Volos)
-(279, Alexandros, Anagnostopoulos, Rodos)
-(280, Dimitris, Karagiannis, Volos)
-(281, Maria, Papadopoulos, Volos)
-(282, Petros, Karagiannis, Chania)
-
-Block id: 22
-Number of records: 7
-Next block: 75
-Parent id: 65
-(958, Petros, Nikolaou, Larisa)
-(959, Georgios, Anagnostopoulos, Ioannina)
-(960, Eleni, Georgiou, Chania)
-(961, Konstantinos, Nikolaou, Chania)
-(962, Eleni, Anagnostopoulos, Volos)
-(963, Maria, Papadopoulos, Rodos)
-(967, Georgios, Anagnostopoulos, Larisa)
-
-Block id: 23
-Number of records: 6
-Next block: 58
-Parent id: 65
-(579, Konstantinos, Anagnostopoulos, Volos)
+Block id: 4
+Number of records: 2
+Next block: 16
+Parent id: 25
+(540, Georgios, Dimitriou, Patra)
 (582, Maria, Karagiannis, Chania)
-(584, Sofia, Anagnostopoulos, Athina)
-(585, Maria, Mavromatis, Rodos)
-(586, Anna, Karagiannis, Volos)
-(587, Evangelia, Karagiannis, Irakleio)
 
-Block id: 24
-Number of records: 7
-Next block: 93
-Parent id: 2
-(62, Konstantinos, Papadopoulos, Larisa)
-(63, Eleni, Papadopoulos, Larisa)
-(64, Alexandros, Dimitriou, Rodos)
-(66, Evangelia, Stamatopoulos, Ioannina)
-(67, Maria, Stamatopoulos, Athina)
-(69, Eleni, Georgiou, Rodos)
-(70, Petros, Mavromatis, Volos)
-
-Block id: 25
-Number of records: 5
-Next block: 116
-Parent id: 65
-(857, Eleni, Dimitriou, Patra)
-(858, Maria, Stamatopoulos, Patra)
-(859, Petros, Georgiou, Rodos)
-(861, Eleni, Karagiannis, Ioannina)
-(862, Alexandros, Nikolaou, Volos)
-
-Block id: 26
-Number of records: 7
-Next block: 6
-Parent id: 2
-(209, Sofia, Stamatopoulos, Patra)
-(211, Petros, Christodoulou, Chania)
-(213, Konstantinos, Dimitriou, Volos)
-(214, Maria, Dimitriou, Ioannina)
-(216, Evangelia, Karagiannis, Kalamata)
-(217, Petros, Mavromatis, Larisa)
-(222, Anna, Mavromatis, Kalamata)
-
-Block id: 27
-Number of records: 6
-Next block: 90
-Parent id: 2
-(143, Sofia, Kostopoulos, Athina)
-(146, Petros, Papadopoulos, Irakleio)
-(149, Eleni, Georgiou, Athina)
-(150, Eleni, Nikolaou, Kalamata)
-(151, Maria, Papadopoulos, Chania)
-(152, Sofia, Anagnostopoulos, Chania)
-
-Block id: 28
-Number of records: 6
-Next block: 103
-Parent id: 2
-(50, Petros, Nikolaou, Rodos)
-(51, Alexandros, Georgiou, Patra)
-(52, Anna, Kostopoulos, Athina)
-(53, Alexandros, Dimitriou, Ioannina)
-(54, Alexandros, Kostopoulos, Rodos)
-(55, Dimitris, Mavromatis, Rodos)
-
-Block id: 29
-Number of records: 6
-Next block: 79
-Parent id: 65
-(796, Anna, Kostopoulos, Patra)
-(797, Alexandros, Karagiannis, Chania)
-(799, Eleni, Stamatopoulos, Chania)
-(801, Georgios, Dimitriou, Ioannina)
-(802, Petros, Papadopoulos, Rodos)
-(804, Dimitris, Christodoulou, Kalamata)
-
-Block id: 30
-Number of records: 5
-Next block: 100
-Parent id: 2
-(244, Sofia, Mavromatis, Irakleio)
-(246, Dimitris, Mavromatis, Ioannina)
-(247, Anna, Mavromatis, Volos)
-(249, Alexandros, Anagnostopoulos, Volos)
-(250, Dimitris, Kostopoulos, Chania)
-
-Block id: 31
-Number of records: 8
-Next block: 23
-Parent id: 65
-(567, Georgios, Kostopoulos, Chania)
-(568, Georgios, Nikolaou, Kalamata)
-(569, Anna, Dimitriou, Patra)
-(570, Eleni, Nikolaou, Chania)
-(571, Dimitris, Karagiannis, Rodos)
-(572, Maria, Georgiou, Larisa)
-(573, Petros, Mavromatis, Kalamata)
-(574, Sofia, Christodoulou, Kalamata)
-
-Block id: 32
-Number of records: 8
-Next block: 9
-Parent id: 2
-(291, Maria, Mavromatis, Athina)
-(292, Dimitris, Dimitriou, Rodos)
-(294, Eleni, Nikolaou, Irakleio)
-(295, Petros, Christodoulou, Athina)
-(296, Maria, Karagiannis, Volos)
-(298, Alexandros, Karagiannis, Irakleio)
-(299, Konstantinos, Stamatopoulos, Rodos)
-(300, Petros, Nikolaou, Chania)
-
-Block id: 33
-Number of records: 5
-Next block: 76
-Parent id: 65
-(682, Alexandros, Dimitriou, Kalamata)
-(684, Evangelia, Papadopoulos, Volos)
-(685, Georgios, Mavromatis, Kalamata)
-(686, Maria, Dimitriou, Volos)
-(690, Evangelia, Anagnostopoulos, Volos)
-
-Block id: 34
-Number of records: 6
-Next block: 95
-Parent id: 2
-(36, Maria, Papadopoulos, Athina)
-(37, Konstantinos, Christodoulou, Athina)
-(39, Dimitris, Kostopoulos, Chania)
-(40, Alexandros, Karagiannis, Larisa)
-(41, Petros, Anagnostopoulos, Irakleio)
-(42, Konstantinos, Stamatopoulos, Chania)
-
-Block id: 35
-Number of records: 7
+Block id: 5
+Number of records: 2
 Next block: 18
-Parent id: 65
-(604, Sofia, Mavromatis, Volos)
-(610, Konstantinos, Kostopoulos, Patra)
-(613, Petros, Nikolaou, Kalamata)
-(614, Anna, Christodoulou, Ioannina)
-(617, Konstantinos, Kostopoulos, Kalamata)
-(620, Anna, Christodoulou, Kalamata)
-(621, Eleni, Karagiannis, Patra)
+Parent id: 13
+(211, Petros, Christodoulou, Chania)
+(226, Georgios, Karagiannis, Irakleio)
 
-Block id: 36
-Number of records: 7
-Next block: 60
-Parent id: 65
-(975, Petros, Christodoulou, Athina)
-(977, Maria, Nikolaou, Larisa)
-(979, Evangelia, Christodoulou, Ioannina)
-(980, Anna, Mavromatis, Athina)
-(981, Maria, Nikolaou, Ioannina)
-(982, Sofia, Christodoulou, Irakleio)
-(983, Alexandros, Christodoulou, Irakleio)
-
-Block id: 37
-Number of records: 5
-Next block: 109
-Parent id: 65
-(907, Evangelia, Kostopoulos, Rodos)
-(908, Konstantinos, Papadopoulos, Irakleio)
-(910, Petros, Stamatopoulos, Ioannina)
-(911, Georgios, Mavromatis, Chania)
-(912, Evangelia, Christodoulou, Rodos)
-
-Block id: 38
-Number of records: 7
-Next block: 85
-Parent id: 2
-(130, Konstantinos, Georgiou, Chania)
-(131, Anna, Christodoulou, Irakleio)
-(132, Anna, Kostopoulos, Kalamata)
-(133, Petros, Papadopoulos, Chania)
-(134, Sofia, Nikolaou, Patra)
-(135, Georgios, Karagiannis, Rodos)
-(136, Alexandros, Kostopoulos, Irakleio)
-
-Block id: 39
-Number of records: 5
-Next block: 20
-Parent id: 2
-(172, Eleni, Karagiannis, Patra)
-(173, Eleni, Georgiou, Patra)
-(174, Eleni, Kostopoulos, Chania)
-(176, Anna, Christodoulou, Kalamata)
-(177, Alexandros, Kostopoulos, Ioannina)
-
-Block id: 40
-Number of records: 5
-Next block: 71
-Parent id: 2
-(354, Sofia, Dimitriou, Volos)
-(355, Konstantinos, Kostopoulos, Ioannina)
-(356, Dimitris, Mavromatis, Athina)
-(361, Petros, Kostopoulos, Chania)
-(363, Eleni, Anagnostopoulos, Volos)
-
-Block id: 41
-Number of records: 6
-Next block: 91
-Parent id: 65
-(818, Maria, Anagnostopoulos, Larisa)
-(821, Eleni, Mavromatis, Athina)
-(823, Georgios, Georgiou, Volos)
-(824, Eleni, Nikolaou, Kalamata)
-(825, Konstantinos, Nikolaou, Rodos)
-(826, Evangelia, Mavromatis, Ioannina)
-
-Block id: 42
-Number of records: 5
-Next block: 89
-Parent id: 2
-(23, Sofia, Georgiou, Larisa)
-(24, Petros, Karagiannis, Larisa)
-(25, Petros, Karagiannis, Irakleio)
-(26, Alexandros, Dimitriou, Volos)
-(29, Maria, Dimitriou, Athina)
-
-Block id: 43
-Number of records: 6
-Next block: 111
-Parent id: 2
-(190, Maria, Nikolaou, Larisa)
-(191, Evangelia, Papadopoulos, Irakleio)
-(195, Evangelia, Stamatopoulos, Ioannina)
-(197, Alexandros, Dimitriou, Athina)
-(199, Alexandros, Papadopoulos, Larisa)
-(201, Eleni, Papadopoulos, Patra)
-
-Block id: 44
-Number of records: 7
-Next block: 98
-Parent id: 65
-(503, Evangelia, Papadopoulos, Athina)
-(504, Evangelia, Stamatopoulos, Larisa)
-(505, Evangelia, Dimitriou, Chania)
-(507, Georgios, Anagnostopoulos, Athina)
-(508, Petros, Christodoulou, Volos)
-(509, Evangelia, Stamatopoulos, Athina)
-(512, Georgios, Stamatopoulos, Irakleio)
-
-Block id: 45
-Number of records: 6
-Next block: 86
-Parent id: 65
-(721, Konstantinos, Stamatopoulos, Kalamata)
-(722, Eleni, Anagnostopoulos, Rodos)
-(723, Petros, Papadopoulos, Athina)
-(724, Konstantinos, Papadopoulos, Rodos)
-(730, Sofia, Christodoulou, Volos)
-(732, Maria, Karagiannis, Patra)
-
-Block id: 46
-Number of records: 8
-Next block: 7
-Parent id: 2
-(418, Anna, Dimitriou, Kalamata)
-(421, Evangelia, Mavromatis, Athina)
-(425, Sofia, Dimitriou, Athina)
-(426, Eleni, Christodoulou, Kalamata)
-(428, Eleni, Anagnostopoulos, Irakleio)
-(429, Alexandros, Mavromatis, Chania)
-(430, Konstantinos, Stamatopoulos, Kalamata)
-(432, Sofia, Christodoulou, Patra)
-
-Block id: 47
-Number of records: 5
-Next block: 107
-Parent id: 2
-(465, Konstantinos, Nikolaou, Irakleio)
-(466, Eleni, Karagiannis, Chania)
-(467, Sofia, Christodoulou, Irakleio)
-(468, Sofia, Anagnostopoulos, Rodos)
-(472, Dimitris, Georgiou, Larisa)
-
-Block id: 48
-Number of records: 4
-Next block: 13
-Parent id: 2
-(87, Petros, Nikolaou, Rodos)
-(88, Evangelia, Papadopoulos, Rodos)
-(89, Alexandros, Mavromatis, Irakleio)
-(90, Konstantinos, Nikolaou, Chania)
-
-Block id: 49
-Number of records: 5
-Next block: 19
-Parent id: 65
-(700, Maria, Dimitriou, Patra)
-(701, Anna, Anagnostopoulos, Ioannina)
-(704, Sofia, Christodoulou, Irakleio)
-(705, Konstantinos, Anagnostopoulos, Larisa)
-(707, Anna, Papadopoulos, Volos)
-
-Block id: 50
-Number of records: 5
-Next block: 40
-Parent id: 2
-(348, Dimitris, Stamatopoulos, Larisa)
-(349, Maria, Nikolaou, Athina)
-(351, Dimitris, Papadopoulos, Irakleio)
-(352, Georgios, Dimitriou, Larisa)
-(353, Georgios, Kostopoulos, Athina)
-
-Block id: 51
-Number of records: 8
-Next block: 15
-Parent id: 65
-(868, Anna, Mavromatis, Rodos)
-(870, Evangelia, Nikolaou, Volos)
-(871, Konstantinos, Stamatopoulos, Ioannina)
-(872, Eleni, Nikolaou, Rodos)
-(873, Petros, Anagnostopoulos, Ioannina)
-(877, Anna, Anagnostopoulos, Irakleio)
-(878, Dimitris, Papadopoulos, Patra)
-(879, Konstantinos, Nikolaou, Ioannina)
-
-Block id: 52
-Number of records: 7
-Next block: 38
-Parent id: 2
-(123, Eleni, Anagnostopoulos, Rodos)
-(124, Evangelia, Stamatopoulos, Kalamata)
-(125, Maria, Anagnostopoulos, Volos)
-(126, Anna, Nikolaou, Larisa)
-(127, Alexandros, Karagiannis, Volos)
-(128, Eleni, Karagiannis, Irakleio)
-(129, Petros, Dimitriou, Chania)
-
-Block id: 53
-Number of records: 8
-Next block: 106
-Parent id: 65
-(662, Dimitris, Stamatopoulos, Chania)
-(663, Alexandros, Christodoulou, Kalamata)
-(664, Konstantinos, Nikolaou, Ioannina)
-(669, Sofia, Karagiannis, Irakleio)
-(672, Eleni, Mavromatis, Rodos)
-(674, Maria, Anagnostopoulos, Rodos)
-(675, Maria, Nikolaou, Ioannina)
-(676, Petros, Stamatopoulos, Patra)
-
-Block id: 54
-Number of records: 8
-Next block: 22
-Parent id: 65
-(944, Dimitris, Dimitriou, Irakleio)
-(946, Alexandros, Christodoulou, Patra)
-(949, Evangelia, Christodoulou, Kalamata)
-(951, Anna, Georgiou, Chania)
-(954, Georgios, Stamatopoulos, Irakleio)
-(955, Maria, Mavromatis, Patra)
-(956, Alexandros, Stamatopoulos, Ioannina)
-(957, Konstantinos, Christodoulou, Larisa)
-
-Block id: 55
-Number of records: 5
-Next block: 21
-Parent id: 2
-(266, Petros, Karagiannis, Volos)
-(267, Alexandros, Nikolaou, Athina)
-(269, Sofia, Georgiou, Athina)
-(270, Evangelia, Christodoulou, Volos)
-(272, Dimitris, Karagiannis, Larisa)
-
-Block id: 56
-Number of records: 5
-Next block: 110
-Parent id: 65
-(547, Eleni, Karagiannis, Kalamata)
-(551, Georgios, Anagnostopoulos, Irakleio)
-(553, Eleni, Dimitriou, Irakleio)
-(555, Dimitris, Karagiannis, Kalamata)
-(557, Petros, Nikolaou, Irakleio)
-
-Block id: 57
-Number of records: 7
+Block id: 6
+Number of records: 2
 Next block: 17
-Parent id: 65
-(926, Georgios, Karagiannis, Chania)
-(927, Dimitris, Anagnostopoulos, Rodos)
-(930, Georgios, Dimitriou, Larisa)
-(931, Eleni, Christodoulou, Rodos)
-(932, Dimitris, Georgiou, Larisa)
-(933, Eleni, Nikolaou, Chania)
-(934, Dimitris, Stamatopoulos, Volos)
+Parent id: 7
+(383, Georgios, Christodoulou, Kalamata)
+(393, Georgios, Georgiou, Kalamata)
 
-Block id: 58
-Number of records: 6
-Next block: 99
-Parent id: 65
-(589, Petros, Anagnostopoulos, Rodos)
-(590, Konstantinos, Papadopoulos, Larisa)
-(591, Konstantinos, Stamatopoulos, Patra)
-(593, Maria, Mavromatis, Ioannina)
-(595, Alexandros, Mavromatis, Chania)
-(596, Sofia, Mavromatis, Larisa)
-
-Block id: 59
-Number of records: 5
-Next block: 115
-Parent id: 2
-(403, Georgios, Dimitriou, Rodos)
-(404, Anna, Christodoulou, Rodos)
-(408, Evangelia, Stamatopoulos, Rodos)
-(409, Eleni, Nikolaou, Ioannina)
-(410, Petros, Dimitriou, Patra)
-
-Block id: 60
-Number of records: 6
-Next block: -1
-Parent id: 65
-(984, Georgios, Karagiannis, Chania)
-(987, Georgios, Anagnostopoulos, Athina)
-(988, Konstantinos, Papadopoulos, Ioannina)
-(990, Anna, Karagiannis, Volos)
-(996, Maria, Christodoulou, Volos)
-(998, Sofia, Christodoulou, Irakleio)
-
-Block id: 61
-Number of records: 8
-Next block: 39
-Parent id: 2
-(162, Dimitris, Papadopoulos, Kalamata)
-(163, Georgios, Georgiou, Rodos)
-(164, Anna, Georgiou, Patra)
-(166, Maria, Papadopoulos, Chania)
-(167, Konstantinos, Nikolaou, Patra)
-(168, Sofia, Anagnostopoulos, Kalamata)
-(169, Alexandros, Christodoulou, Larisa)
-(171, Georgios, Stamatopoulos, Volos)
-
-Block id: 62
-Number of records: 5
-Next block: 108
-Parent id: 2
-(452, Evangelia, Stamatopoulos, Patra)
-(454, Eleni, Papadopoulos, Patra)
-(456, Eleni, Mavromatis, Kalamata)
-(457, Dimitris, Stamatopoulos, Larisa)
-(458, Alexandros, Georgiou, Rodos)
-
-Block id: 63
-Number of records: 6
-Next block: 3
-Parent id: 65
-(638, Eleni, Karagiannis, Larisa)
-(639, Anna, Kostopoulos, Volos)
-(640, Dimitris, Kostopoulos, Ioannina)
-(641, Maria, Kostopoulos, Ioannina)
-(644, Alexandros, Mavromatis, Irakleio)
-(647, Anna, Anagnostopoulos, Chania)
-
-Block id: 64
-Number of records: 7
-Next block: 10
-Parent id: 65
-(519, Dimitris, Karagiannis, Larisa)
-(520, Anna, Georgiou, Patra)
-(522, Maria, Kostopoulos, Patra)
-(523, Alexandros, Dimitriou, Ioannina)
-(524, Eleni, Karagiannis, Irakleio)
-(525, Konstantinos, Christodoulou, Ioannina)
-(526, Georgios, Nikolaou, Chania)
-
-Block id: 65
-Number of keys: 56
-Parent id: 66
-14 | Key: 503 | 44 | Key: 513 | 98 | Key: 519 | 64 | Key: 528 | 10 | Key: 536 | 114 | Key: 542 | 73 | Key: 547 | 56 | Key: 558 | 110 | Key: 567 | 31 | Key: 579 | 23 | Key: 589 | 58 | Key: 598 | 99 | Key: 604 | 35 | Key: 622 | 18 | Key: 629 | 88 | Key: 638 | 63 | Key: 649 | 3 | Key: 658 | 78 | Key: 662 | 53 | Key: 677 | 106 | Key: 682 | 33 | Key: 693 | 76 | Key: 700 | 49 | Key: 708 | 19 | Key: 715 | 112 | Key: 721 | 45 | Key: 734 | 86 | Key: 746 | 12 | Key: 754 | 84 | Key: 761 | 69 | Key: 776 | 102 | Key: 784 | 5 | Key: 790 | 77 | Key: 796 | 29 | Key: 805 | 79 | Key: 818 | 41 | Key: 829 | 91 | Key: 841 | 8 | Key: 847 | 104 | Key: 851 | 68 | Key: 857 | 25 | Key: 863 | 116 | Key: 868 | 51 | Key: 881 | 15 | Key: 889 | 97 | Key: 898 | 67 | Key: 907 | 37 | Key: 913 | 109 | Key: 920 | 81 | Key: 926 | 57 | Key: 936 | 17 | Key: 944 | 54 | Key: 958 | 22 | Key: 968 | 75 | Key: 975 | 36 | Key: 984 | 60 | 
-
-Block id: 66
+Block id: 7
 Number of keys: 1
-Parent id: -1
-2 | Key: 490 | 65 | 
+Parent id: 22
+6 | Key: 434 | 17 | 
 
-Block id: 67
-Number of records: 7
-Next block: 37
-Parent id: 65
-(898, Georgios, Papadopoulos, Volos)
-(899, Georgios, Stamatopoulos, Chania)
-(900, Petros, Georgiou, Volos)
-(901, Maria, Stamatopoulos, Kalamata)
-(902, Petros, Georgiou, Irakleio)
-(904, Petros, Kostopoulos, Athina)
-(905, Georgios, Mavromatis, Rodos)
+Block id: 8
+Number of keys: 1
+Parent id: 23
+2 | Key: 211 | 13 | 
 
-Block id: 68
-Number of records: 4
-Next block: 25
-Parent id: 65
-(851, Konstantinos, Papadopoulos, Patra)
-(853, Georgios, Christodoulou, Kalamata)
-(854, Georgios, Karagiannis, Rodos)
-(856, Eleni, Nikolaou, Kalamata)
+Block id: 9
+Number of records: 2
+Next block: 14
+Parent id: 21
+(784, Eleni, Kostopoulos, Irakleio)
+(788, Konstantinos, Anagnostopoulos, Irakleio)
 
-Block id: 69
-Number of records: 5
-Next block: 102
-Parent id: 65
-(761, Alexandros, Anagnostopoulos, Patra)
-(765, Maria, Karagiannis, Larisa)
-(766, Alexandros, Karagiannis, Ioannina)
-(768, Maria, Kostopoulos, Volos)
-(775, Alexandros, Georgiou, Irakleio)
-
-Block id: 70
-Number of records: 5
-Next block: 101
-Parent id: 2
-(12, Evangelia, Mavromatis, Rodos)
-(13, Eleni, Stamatopoulos, Irakleio)
-(14, Georgios, Anagnostopoulos, Rodos)
-(16, Konstantinos, Stamatopoulos, Larisa)
-(17, Eleni, Stamatopoulos, Chania)
-
-Block id: 71
-Number of records: 5
+Block id: 10
+Number of records: 3
 Next block: 11
-Parent id: 2
-(366, Maria, Mavromatis, Athina)
-(369, Eleni, Christodoulou, Athina)
-(370, Sofia, Kostopoulos, Athina)
-(373, Alexandros, Anagnostopoulos, Irakleio)
-(374, Petros, Mavromatis, Ioannina)
-
-Block id: 72
-Number of records: 7
-Next block: 32
-Parent id: 2
-(283, Dimitris, Kostopoulos, Patra)
-(284, Evangelia, Kostopoulos, Kalamata)
-(285, Evangelia, Anagnostopoulos, Kalamata)
-(286, Konstantinos, Karagiannis, Kalamata)
-(288, Alexandros, Anagnostopoulos, Kalamata)
-(289, Anna, Christodoulou, Athina)
-(290, Alexandros, Anagnostopoulos, Patra)
-
-Block id: 73
-Number of records: 4
-Next block: 56
-Parent id: 65
-(542, Konstantinos, Christodoulou, Larisa)
-(543, Konstantinos, Karagiannis, Chania)
-(544, Alexandros, Papadopoulos, Patra)
-(545, Konstantinos, Dimitriou, Kalamata)
-
-Block id: 74
-Number of records: 7
-Next block: 52
-Parent id: 2
-(111, Evangelia, Papadopoulos, Patra)
-(114, Sofia, Georgiou, Athina)
-(115, Sofia, Dimitriou, Irakleio)
-(116, Alexandros, Dimitriou, Athina)
-(117, Anna, Georgiou, Rodos)
-(120, Alexandros, Kostopoulos, Kalamata)
-(122, Evangelia, Papadopoulos, Larisa)
-
-Block id: 75
-Number of records: 4
-Next block: 36
-Parent id: 65
-(968, Georgios, Stamatopoulos, Chania)
-(969, Georgios, Papadopoulos, Irakleio)
-(970, Dimitris, Dimitriou, Larisa)
-(974, Sofia, Karagiannis, Irakleio)
-
-Block id: 76
-Number of records: 6
-Next block: 49
-Parent id: 65
-(693, Konstantinos, Stamatopoulos, Volos)
-(695, Alexandros, Mavromatis, Rodos)
-(696, Evangelia, Stamatopoulos, Patra)
-(697, Georgios, Papadopoulos, Rodos)
-(698, Maria, Anagnostopoulos, Patra)
-(699, Maria, Papadopoulos, Patra)
-
-Block id: 77
-Number of records: 4
-Next block: 29
-Parent id: 65
-(790, Dimitris, Mavromatis, Larisa)
-(793, Maria, Nikolaou, Larisa)
-(794, Eleni, Stamatopoulos, Patra)
-(795, Alexandros, Karagiannis, Patra)
-
-Block id: 78
-Number of records: 4
-Next block: 53
-Parent id: 65
-(658, Alexandros, Kostopoulos, Kalamata)
-(659, Eleni, Mavromatis, Kalamata)
-(660, Anna, Stamatopoulos, Irakleio)
-(661, Alexandros, Kostopoulos, Ioannina)
-
-Block id: 79
-Number of records: 6
-Next block: 41
-Parent id: 65
-(805, Dimitris, Dimitriou, Patra)
-(807, Eleni, Stamatopoulos, Volos)
-(811, Evangelia, Georgiou, Chania)
-(813, Petros, Papadopoulos, Kalamata)
-(814, Anna, Georgiou, Volos)
-(815, Alexandros, Christodoulou, Irakleio)
-
-Block id: 80
-Number of records: 7
-Next block: 62
-Parent id: 2
-(444, Anna, Mavromatis, Patra)
-(445, Anna, Mavromatis, Kalamata)
-(446, Evangelia, Georgiou, Rodos)
-(447, Petros, Mavromatis, Chania)
-(448, Dimitris, Kostopoulos, Chania)
-(449, Dimitris, Nikolaou, Rodos)
-(450, Konstantinos, Nikolaou, Ioannina)
-
-Block id: 81
-Number of records: 4
-Next block: 57
-Parent id: 65
-(920, Konstantinos, Dimitriou, Ioannina)
-(923, Anna, Papadopoulos, Irakleio)
-(924, Petros, Mavromatis, Patra)
-(925, Eleni, Mavromatis, Larisa)
-
-Block id: 82
-Number of records: 6
-Next block: 74
-Parent id: 2
-(100, Georgios, Nikolaou, Athina)
-(106, Georgios, Anagnostopoulos, Larisa)
-(107, Petros, Anagnostopoulos, Volos)
-(108, Alexandros, Georgiou, Kalamata)
-(109, Petros, Karagiannis, Chania)
-(110, Dimitris, Christodoulou, Irakleio)
-
-Block id: 83
-Number of records: 5
-Next block: 55
-Parent id: 2
-(260, Evangelia, Anagnostopoulos, Irakleio)
-(261, Dimitris, Papadopoulos, Athina)
-(263, Petros, Stamatopoulos, Athina)
-(264, Maria, Kostopoulos, Athina)
-(265, Eleni, Nikolaou, Ioannina)
-
-Block id: 84
-Number of records: 4
-Next block: 69
-Parent id: 65
-(754, Evangelia, Dimitriou, Chania)
-(757, Konstantinos, Georgiou, Chania)
-(759, Georgios, Nikolaou, Ioannina)
-(760, Petros, Nikolaou, Athina)
-
-Block id: 85
-Number of records: 4
-Next block: 27
-Parent id: 2
-(137, Sofia, Anagnostopoulos, Irakleio)
-(140, Petros, Anagnostopoulos, Ioannina)
-(141, Anna, Nikolaou, Ioannina)
-(142, Alexandros, Georgiou, Chania)
-
-Block id: 86
-Number of records: 8
-Next block: 12
-Parent id: 65
-(734, Evangelia, Mavromatis, Ioannina)
-(735, Eleni, Dimitriou, Volos)
-(738, Anna, Anagnostopoulos, Larisa)
-(739, Georgios, Karagiannis, Athina)
-(741, Georgios, Anagnostopoulos, Volos)
-(742, Alexandros, Nikolaou, Volos)
-(743, Georgios, Papadopoulos, Chania)
-(744, Konstantinos, Kostopoulos, Chania)
-
-Block id: 87
-Number of records: 4
-Next block: 4
-Parent id: 2
-(308, Anna, Kostopoulos, Athina)
-(310, Maria, Kostopoulos, Irakleio)
-(311, Alexandros, Mavromatis, Kalamata)
+Parent id: 13
+(305, Maria, Karagiannis, Chania)
+(306, Anna, Stamatopoulos, Irakleio)
 (313, Eleni, Karagiannis, Athina)
 
-Block id: 88
-Number of records: 4
-Next block: 63
-Parent id: 65
-(629, Evangelia, Dimitriou, Rodos)
-(633, Maria, Stamatopoulos, Larisa)
-(635, Eleni, Nikolaou, Patra)
-(636, Alexandros, Papadopoulos, Irakleio)
+Block id: 11
+Number of records: 3
+Next block: 6
+Parent id: 13
+(315, Alexandros, Anagnostopoulos, Patra)
+(317, Dimitris, Dimitriou, Irakleio)
+(336, Maria, Nikolaou, Larisa)
 
-Block id: 89
-Number of records: 4
-Next block: 34
-Parent id: 2
-(32, Konstantinos, Karagiannis, Chania)
-(33, Dimitris, Kostopoulos, Ioannina)
-(34, Konstantinos, Karagiannis, Kalamata)
-(35, Sofia, Christodoulou, Patra)
-
-Block id: 90
-Number of records: 6
-Next block: 61
-Parent id: 2
-(154, Eleni, Stamatopoulos, Chania)
-(155, Dimitris, Nikolaou, Athina)
-(157, Sofia, Anagnostopoulos, Athina)
-(158, Eleni, Mavromatis, Volos)
-(159, Sofia, Mavromatis, Ioannina)
-(161, Georgios, Karagiannis, Ioannina)
-
-Block id: 91
-Number of records: 4
-Next block: 8
-Parent id: 65
-(829, Alexandros, Dimitriou, Irakleio)
-(834, Evangelia, Nikolaou, Rodos)
-(835, Anna, Kostopoulos, Patra)
-(838, Dimitris, Papadopoulos, Irakleio)
-
-Block id: 92
-Number of records: 5
-Next block: 16
-Parent id: 2
-(325, Anna, Georgiou, Chania)
-(327, Alexandros, Karagiannis, Rodos)
-(328, Dimitris, Georgiou, Kalamata)
-(334, Petros, Georgiou, Chania)
-(335, Eleni, Mavromatis, Irakleio)
-
-Block id: 93
-Number of records: 4
-Next block: 48
-Parent id: 2
-(71, Evangelia, Kostopoulos, Chania)
-(72, Sofia, Papadopoulos, Kalamata)
-(78, Eleni, Nikolaou, Kalamata)
-(81, Georgios, Nikolaou, Kalamata)
-
-Block id: 94
-Number of records: 6
-Next block: 14
-Parent id: 2
-(480, Georgios, Karagiannis, Chania)
-(483, Maria, Anagnostopoulos, Ioannina)
-(485, Evangelia, Anagnostopoulos, Volos)
-(486, Georgios, Georgiou, Chania)
-(487, Dimitris, Christodoulou, Athina)
-(488, Evangelia, Anagnostopoulos, Kalamata)
-
-Block id: 95
-Number of records: 4
-Next block: 28
-Parent id: 2
-(43, Maria, Christodoulou, Chania)
-(46, Alexandros, Mavromatis, Volos)
-(47, Konstantinos, Dimitriou, Chania)
-(49, Konstantinos, Georgiou, Volos)
-
-Block id: 96
-Number of records: 4
-Next block: 59
-Parent id: 2
-(393, Georgios, Georgiou, Kalamata)
-(394, Georgios, Nikolaou, Patra)
-(396, Sofia, Papadopoulos, Irakleio)
-(397, Georgios, Mavromatis, Rodos)
-
-Block id: 97
-Number of records: 6
-Next block: 67
-Parent id: 65
-(889, Petros, Christodoulou, Patra)
-(890, Georgios, Stamatopoulos, Patra)
-(892, Sofia, Christodoulou, Patra)
-(893, Eleni, Georgiou, Ioannina)
-(896, Konstantinos, Anagnostopoulos, Rodos)
-(897, Konstantinos, Nikolaou, Volos)
-
-Block id: 98
-Number of records: 4
-Next block: 64
-Parent id: 65
-(513, Konstantinos, Christodoulou, Ioannina)
-(514, Sofia, Dimitriou, Athina)
-(515, Eleni, Karagiannis, Ioannina)
-(518, Maria, Karagiannis, Rodos)
-
-Block id: 99
-Number of records: 4
-Next block: 35
-Parent id: 65
-(598, Georgios, Anagnostopoulos, Volos)
-(601, Sofia, Karagiannis, Larisa)
-(602, Sofia, Papadopoulos, Volos)
-(603, Sofia, Mavromatis, Rodos)
-
-Block id: 100
-Number of records: 5
-Next block: 83
-Parent id: 2
-(251, Evangelia, Georgiou, Ioannina)
-(256, Sofia, Nikolaou, Rodos)
-(257, Evangelia, Georgiou, Volos)
-(258, Alexandros, Dimitriou, Chania)
-(259, Sofia, Stamatopoulos, Patra)
-
-Block id: 101
-Number of records: 4
-Next block: 42
-Parent id: 2
-(18, Alexandros, Mavromatis, Irakleio)
-(20, Sofia, Karagiannis, Chania)
-(21, Maria, Kostopoulos, Larisa)
-(22, Petros, Stamatopoulos, Larisa)
-
-Block id: 102
-Number of records: 5
+Block id: 12
+Number of records: 3
 Next block: 5
-Parent id: 65
-(776, Konstantinos, Anagnostopoulos, Kalamata)
-(777, Dimitris, Christodoulou, Kalamata)
-(779, Eleni, Christodoulou, Athina)
-(780, Petros, Karagiannis, Volos)
+Parent id: 2
+(87, Petros, Nikolaou, Rodos)
+(91, Alexandros, Nikolaou, Athina)
+(97, Sofia, Georgiou, Irakleio)
+
+Block id: 13
+Number of keys: 3
+Parent id: 8
+5 | Key: 229 | 18 | Key: 305 | 10 | Key: 315 | 11 | 
+
+Block id: 14
+Number of records: 2
+Next block: 27
+Parent id: 21
+(793, Maria, Nikolaou, Larisa)
+(795, Alexandros, Karagiannis, Patra)
+
+Block id: 15
+Number of keys: 1
+Parent id: 22
+3 | Key: 754 | 20 | 
+
+Block id: 16
+Number of records: 2
+Next block: 3
+Parent id: 25
+(649, Sofia, Dimitriou, Volos)
+(676, Petros, Stamatopoulos, Patra)
+
+Block id: 17
+Number of records: 2
+Next block: 24
+Parent id: 7
+(434, Konstantinos, Anagnostopoulos, Ioannina)
+(440, Evangelia, Georgiou, Volos)
+
+Block id: 18
+Number of records: 2
+Next block: 10
+Parent id: 13
+(229, Anna, Georgiou, Irakleio)
+(301, Alexandros, Nikolaou, Patra)
+
+Block id: 19
+Number of records: 2
+Next block: -1
+Parent id: 21
+(862, Alexandros, Nikolaou, Volos)
+(865, Evangelia, Karagiannis, Ioannina)
+
+Block id: 20
+Number of records: 2
+Next block: 9
+Parent id: 15
+(754, Evangelia, Dimitriou, Chania)
 (782, Alexandros, Dimitriou, Volos)
 
-Block id: 103
-Number of records: 5
-Next block: 24
-Parent id: 2
-(56, Eleni, Dimitriou, Chania)
-(57, Maria, Georgiou, Irakleio)
-(58, Sofia, Papadopoulos, Athina)
-(59, Georgios, Mavromatis, Athina)
-(61, Sofia, Kostopoulos, Patra)
+Block id: 21
+Number of keys: 3
+Parent id: 22
+9 | Key: 22 | 14 | Key: 796 | 27 | Key: 862 | 19 | 
 
-Block id: 104
-Number of records: 4
-Next block: 68
-Parent id: 65
-(847, Konstantinos, Dimitriou, Volos)
-(848, Konstantinos, Papadopoulos, Larisa)
-(849, Eleni, Mavromatis, Kalamata)
-(850, Maria, Papadopoulos, Volos)
+Block id: 22
+Number of keys: 3
+Parent id: 23
+7 | Key: 467 | 25 | Key: 690 | 15 | Key: 784 | 21 | 
 
-Block id: 105
-Number of records: 4
-Next block: 96
-Parent id: 2
-(386, Eleni, Karagiannis, Kalamata)
-(388, Petros, Christodoulou, Kalamata)
-(389, Alexandros, Papadopoulos, Kalamata)
-(390, Maria, Dimitriou, Volos)
+Block id: 23
+Number of keys: 1
+Parent id: -1
+8 | Key: 383 | 22 | 
 
-Block id: 106
-Number of records: 4
-Next block: 33
-Parent id: 65
-(677, Konstantinos, Papadopoulos, Volos)
-(679, Sofia, Dimitriou, Ioannina)
-(680, Maria, Dimitriou, Athina)
-(681, Anna, Dimitriou, Rodos)
-
-Block id: 107
-Number of records: 4
-Next block: 94
-Parent id: 2
-(473, Konstantinos, Georgiou, Irakleio)
-(475, Anna, Kostopoulos, Athina)
-(476, Eleni, Christodoulou, Irakleio)
-(479, Anna, Stamatopoulos, Athina)
-
-Block id: 108
-Number of records: 4
-Next block: 47
-Parent id: 2
-(460, Konstantinos, Kostopoulos, Patra)
-(462, Georgios, Papadopoulos, Rodos)
-(463, Petros, Mavromatis, Ioannina)
-(464, Evangelia, Nikolaou, Athina)
-
-Block id: 109
-Number of records: 5
-Next block: 81
-Parent id: 65
-(913, Dimitris, Christodoulou, Kalamata)
-(914, Konstantinos, Kostopoulos, Volos)
-(916, Dimitris, Kostopoulos, Patra)
-(917, Evangelia, Anagnostopoulos, Irakleio)
-(918, Sofia, Christodoulou, Rodos)
-
-Block id: 110
-Number of records: 4
-Next block: 31
-Parent id: 65
-(558, Sofia, Dimitriou, Irakleio)
-(561, Evangelia, Georgiou, Volos)
-(563, Alexandros, Dimitriou, Athina)
-(566, Maria, Georgiou, Chania)
-
-Block id: 111
-Number of records: 4
+Block id: 24
+Number of records: 2
 Next block: 26
-Parent id: 2
-(202, Georgios, Kostopoulos, Chania)
-(203, Alexandros, Stamatopoulos, Larisa)
-(205, Petros, Dimitriou, Volos)
-(206, Sofia, Anagnostopoulos, Larisa)
+Parent id: 25
+(467, Sofia, Christodoulou, Irakleio)
+(497, Anna, Nikolaou, Ioannina)
 
-Block id: 112
-Number of records: 4
-Next block: 45
-Parent id: 65
-(715, Petros, Christodoulou, Rodos)
-(717, Alexandros, Anagnostopoulos, Irakleio)
-(718, Evangelia, Anagnostopoulos, Irakleio)
-(719, Alexandros, Georgiou, Larisa)
+Block id: 25
+Number of keys: 3
+Parent id: 22
+24 | Key: 503 | 26 | Key: 540 | 4 | Key: 649 | 16 | 
 
-Block id: 113
-Number of records: 4
-Next block: 70
-Parent id: 2
-(7, Dimitris, Mavromatis, Rodos)
-(8, Dimitris, Anagnostopoulos, Kalamata)
-(10, Alexandros, Nikolaou, Ioannina)
-(11, Konstantinos, Anagnostopoulos, Ioannina)
+Block id: 26
+Number of records: 2
+Next block: 4
+Parent id: 25
+(503, Evangelia, Papadopoulos, Athina)
+(528, Sofia, Dimitriou, Rodos)
 
-Block id: 114
-Number of records: 4
-Next block: 73
-Parent id: 65
-(536, Eleni, Nikolaou, Irakleio)
-(538, Sofia, Georgiou, Athina)
-(540, Georgios, Dimitriou, Patra)
-(541, Evangelia, Nikolaou, Irakleio)
-
-Block id: 115
-Number of records: 4
-Next block: 46
-Parent id: 2
-(412, Evangelia, Papadopoulos, Kalamata)
-(413, Georgios, Stamatopoulos, Patra)
-(414, Eleni, Karagiannis, Larisa)
-(417, Konstantinos, Georgiou, Ioannina)
-
-Block id: 116
-Number of records: 4
-Next block: 51
-Parent id: 65
-(863, Alexandros, Dimitriou, Volos)
-(864, Alexandros, Karagiannis, Larisa)
-(865, Evangelia, Karagiannis, Ioannina)
-(867, Eleni, Georgiou, Ioannina)
+Block id: 27
+Number of records: 2
+Next block: 19
+Parent id: 21
+(796, Anna, Kostopoulos, Patra)
+(846, Sofia, Georgiou, Irakleio)
 

@@ -11,7 +11,7 @@
 // #####   //
 // ########################################################### //
 
-#define RECORDS_NUM 1000 // you can change it if you want
+#define RECORDS_NUM 40 // you can change it if you want
 #define FILE_NAME_3 "data3.db"
 
 
@@ -47,6 +47,7 @@ void insertEntries(){
   Record record;
   for (int i = 0; i < RECORDS_NUM; i++){
     record = randomRecord();
+    printf("Inserting record with id %d\n", record.id);
 
     BP_InsertEntry(file_desc, info, record);
   }
