@@ -8,6 +8,8 @@
 #include <bp_datanode.h>
 #include <stdbool.h>
 
+#define MAX_OPEN_FILES 20
+
 #define CALL_BF(call)         \
   {                           \
     BF_ErrorCode code = call; \
@@ -17,8 +19,7 @@
       exit(code);             \
     }                         \
   }
-
-
+int openFiles[MAX_OPEN_FILES];
 
 
 int BP_CreateFile(char *fileName){
@@ -49,16 +50,13 @@ int BP_CreateFile(char *fileName){
     bplus_info.height = 0;
     bplus_info.record_size = sizeof(Record);
     bplus_info.key_size = sizeof(int);
-    bplus_info.is_open = true;
     bplus_info.max_records_per_block = (BF_BLOCK_SIZE - sizeof(BPLUS_DATA_NODE)) / sizeof(Record);
 
     memcpy(data, &bplus_info, sizeof(BPLUS_INFO));
 
 
     BF_Block_SetDirty(block); //αφου τροποποιηθηκε το block, το κανουμε dirty
-    
     CALL_BF(BF_UnpinBlock(block)); //unpin του block, αφου δεν το χρειαζομαστε πια
-
     BF_Block_Destroy(&block); //καταστροφη του δεικτη
 
     CALL_BF(BF_CloseFile(file_desc)); //κλεισιμο του αρχειου
@@ -69,6 +67,9 @@ int BP_CreateFile(char *fileName){
 
 BPLUS_INFO* BP_OpenFile(char *fileName, int *file_desc){
   CALL_BF(BF_OpenFile(fileName, file_desc));
+
+  //αποθηκευση του ανοιχτου αρχειου στον πινακα
+  openFiles[*file_desc] = 1;
 
   BF_Block* block;
   BF_Block_Init(&block);
@@ -94,6 +95,8 @@ int BP_CloseFile(int file_desc, BPLUS_INFO* info){
   //τα block εχουν γινει ηδη unpinned στις υπολοιπες συναρτησεις
   //οποτε αρκει να κλεισουμε το αρχειο
 
+  //το αρχειο πλεον ειναι κλειστο
+  openFiles[file_desc] = 0;
   CALL_BF(BF_CloseFile(file_desc));
   
   return 0;
@@ -101,6 +104,8 @@ int BP_CloseFile(int file_desc, BPLUS_INFO* info){
 
 int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
+  //επιστροφη του block id που εγινε η εισαγωγη
+  int return_value;
 
   //Αν το B+ δέντρο είναι κενό, δημιουργούμε ένα νέο block δεδομένων μονο
   //το οποιο αποτελει και τη ριζα του δεντρου
@@ -139,6 +144,14 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
   //αν υπαρχει χωρος στο block δεδομενων, εισαγουμε την εγγραφη σε αυτο
   if(metadata_datanode->num_records < bplus_info->max_records_per_block){
     insert_rec_in_datanode(fd, data_block_to_insert, bplus_info, record);
+    
+    return_value = data_block_to_insert;
+
+    BF_Block_SetDirty(block);
+    CALL_BF(BF_UnpinBlock(block));
+    BF_Block_Destroy(&block);
+
+    return return_value;
   }
 
   //αν δεν υπαρχει χωρος πρεπει να το σπασουμε
@@ -190,10 +203,18 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
     }
 
+
     BF_Block_SetDirty(new_data_node);
     CALL_BF(BF_UnpinBlock(new_data_node));
     BF_Block_Destroy(&new_data_node);
 
+    BF_Block_SetDirty(block);
+    CALL_BF(BF_UnpinBlock(block));
+    BF_Block_Destroy(&block);
+
+    return_value = BP_FindDataBlockToInsert(fd, record.id, bplus_info->root_block, bplus_info->height);
+
+    return return_value;
   }
   
 
@@ -206,14 +227,26 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
 int BP_GetEntry(int file_desc, BPLUS_INFO *bplus_info, int value, Record** record){
   //βρισκουμε σε ποιο block δεδομενων θα επρεπε να βρισκεται το κλειδι
-
   int height = bplus_info->height;
   int root = bplus_info->root_block;
   int block_with_rec = BP_FindDataBlockToInsert(file_desc, value, root, height);
-  
+
   BF_Block* block;
   BF_Block_Init(&block);
+
+
+
+
+
+  //printf("HEIGHT before %d\n", bplus_info->height);
+
   CALL_BF(BF_GetBlock(file_desc, block_with_rec, block));
+  
+//  printf("HEIGHT after %d\n", bplus_info->height);
+
+
+
+
 
   BPLUS_DATA_NODE* metadata_datanode = get_metadata_datanode(file_desc, block_with_rec);
   char* data = BF_Block_GetData(block);
@@ -328,17 +361,25 @@ void BP_PrintBlock(int fd, int block_id, BPLUS_INFO* bplus_info){
 
 
 void BP_PrintTree(int fd, BPLUS_INFO* bplus_info){
-  printf("\nPrinting B+ Tree\n\n");
-  printf("METADATA\n");
 
-  printf("---Root block: %d\n", bplus_info->root_block); 
-  printf("---Height: %d\n", bplus_info->height);
-  printf("---parent of root: %d\n", get_metadata_indexnode(fd, bplus_info->root_block)->parent_id);
+  FILE* file = fopen("output.txt", "a");
+  if (file == NULL) {
+    perror("Error opening file");
+    return; // Exit if opening the file fails
+}
+  fprintf(file, "\nPrinting B+ Tree\n\n");
+  fprintf(file, "METADATA\n");
+
+  fprintf(file, "---Root block: %d\n", bplus_info->root_block); 
+  fprintf(file, "---Height: %d\n", bplus_info->height);
+  fprintf(file, "---parent of root: %d\n", get_metadata_indexnode(fd, bplus_info->root_block)->parent_id);
   int count;
   BF_GetBlockCounter(fd, &count);
-  printf("---Number of blocks: %d\n\n-------------------\n", count);
+  fprintf(file, "---Number of blocks: %d\n\n-------------------\n", count);
 
   for(int i = 1; i < count; i++){
     BP_PrintBlock(fd, i, bplus_info);
   }
+
+  fclose(file);
 }

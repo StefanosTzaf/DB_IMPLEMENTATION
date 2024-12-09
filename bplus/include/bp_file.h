@@ -11,8 +11,6 @@ typedef struct {
     int height;                 // υψος B+ tree
     int record_size;            // μεγεθος μιας εγγραφης
     int key_size;               // μεγεθος κλειδιου
-
-    bool is_open;               // αν το αρχειο ειναι ανοιχτο ή οχι
     int max_records_per_block;  // μεγιστος αριθμος εγγραφων ανα block
 } BPLUS_INFO;
 

@@ -391,7 +391,7 @@ void update_parents(int fd, BPLUS_INFO* bplus_info, int parent_id){
 // εκτυπωνει τα μεταδεδομενα ενος index node καθως και τους δεικτες με τα κλειδια του
 void print_index_node(int fd, int id){
     // Άνοιγμα αρχείου σε λειτουργία εγγραφής
-    FILE* file = fopen("re.txt", "a");
+    FILE* file = fopen("output.txt", "a");
     if (file == NULL) {
         perror("Error opening file");
         return;

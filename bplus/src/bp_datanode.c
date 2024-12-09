@@ -247,7 +247,7 @@ int split_data_node(int fd, int id, BPLUS_INFO* bplus_info, Record new_rec){
 //εκτυπωνει τις εγγραφες ενος μπλοκ δεδομενων
 void print_data_node(int fd, int id){
     // Άνοιγμα αρχείου σε λειτουργία εγγραφής
-    FILE* file = fopen("re.txt", "a");
+    FILE* file = fopen("output.txt", "a");
     if (file == NULL) {
         perror("Error opening file");
         return;
