@@ -21,6 +21,7 @@ void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int
 void print_index_node(int fd, int id);
 int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_to_insert, int child_id);
 bool is_full_indexnode(int fd, int id);
+void update_parents(int fd, BPLUS_INFO* bplus_info, int parent_id);
 
 
 #endif

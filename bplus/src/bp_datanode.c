@@ -266,6 +266,8 @@ void print_data_node(int fd, int id){
     fprintf(file, "Block id: %d\n", metadata->block_id);
     fprintf(file, "Number of records: %d\n", metadata->num_records);
     fprintf(file, "Next block: %d\n", metadata->next_block);
+    fprintf(file, "Parent id: %d\n", metadata->parent_id);
+
 
     // Εκτύπωση εγγραφών
     for (int i = 0; i < metadata->num_records; i++) {

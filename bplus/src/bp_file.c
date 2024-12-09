@@ -105,7 +105,6 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
   //Αν το B+ δέντρο είναι κενό, δημιουργούμε ένα νέο block δεδομένων μονο
   //το οποιο αποτελει και τη ριζα του δεντρου
   if(bplus_info->height == 0){
-    
     int id_datanode = create_data_node(fd, bplus_info);
     insert_rec_in_datanode(fd, id_datanode, bplus_info, record);
 
@@ -119,8 +118,6 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
   Record tmpRec;  //Αντί για malloc
   Record* result = &tmpRec;
   if(BP_GetEntry(fd, bplus_info, record.id, &result) == 0){
-    // printf("Record already exists:\n" );
-    // printRecord(*result);
     return -1;
   }
 
@@ -141,16 +138,13 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
   //αν υπαρχει χωρος στο block δεδομενων, εισαγουμε την εγγραφη σε αυτο
   if(metadata_datanode->num_records < bplus_info->max_records_per_block){
-
     insert_rec_in_datanode(fd, data_block_to_insert, bplus_info, record);
-
   }
 
   //αν δεν υπαρχει χωρος πρεπει να το σπασουμε
   else{  
 
     int parent_id;
-
     //αν δεν υπαρχει γονεας index node πρεπει να δημιουργηθει
     //αυτο θα ισχυει μονο στην περιπτωση που εχουμε ενα μοναδικο block δεδομενων
     //το οποιο ειναι και η ριζα του δεντρου
@@ -162,14 +156,15 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
       bplus_info->root_block = parent_id;
 
       metadata_datanode->parent_id = parent_id;
-  
     }
 
     else{
       parent_id = metadata_datanode->parent_id;
+
     }
 
     //επιστροφη νεου block δεδομενων που δημιουργηθηκε μετα το split
+
     int new_data_node_id = split_data_node(fd, data_block_to_insert, bplus_info, record);
 
     //αποθηκευση του μικροτερου κλειδιου του νεου block δεδομενων, που πρεπει να εισαχθει σε index node
@@ -194,8 +189,6 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
       int new_index_node = split_index_node(fd, bplus_info, parent_id, key_to_move_up, new_data_node_id);
 
     }
-
-
 
     BF_Block_SetDirty(new_data_node);
     CALL_BF(BF_UnpinBlock(new_data_node));

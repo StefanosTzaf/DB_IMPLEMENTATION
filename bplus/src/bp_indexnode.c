@@ -284,23 +284,28 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
         memcpy(data2 + sizeof(BPLUS_INDEX_NODE) + (2 * (i - split_point - 1) + 2) * sizeof(int), &pointers[i + 1], sizeof(int));
 
     }
-        
+
+    
+
     
     int old_num_keys = metadata1->num_keys; //αριθμος κλειδιων του παλιου block αρχικα
     //ενημερωση μεταδεδομενων των δυο index nodes
     metadata1->num_keys = split_point;
     
-    //αν το split point ειναι περιττο, γιατι το αρχικο μεγεθος των κλειδιων ειναι περιττο(πχ για 7 κλειδια εχουμε split point = 3)
+    //αν το αρχικο μεγεθος των κλειδιων ειναι ζυγο(πχ για 4 κλειδια εχουμε split point = 2)
     //τοτε καθε block παιρνει τον ιδιο αριθμο κλειδιων, αφου το μεσαιο θα αφαιρεθει
     if((old_num_keys) % 2 == 0){
+        metadata2->num_keys = split_point;
+    }
+    
+    //αν ειναι μονο το αρχικο μεγεθος πχ για 7 κλειδια εχουμε split point = 3 
+    //και το ενα μπλοκ θα παρει 3 κλειδια κ το αλλο 4
+    else{ 
         metadata2->num_keys = split_point + 1;
     }
 
-    else{ 
-        metadata2->num_keys = split_point;
-    }
 
-
+    update_parents(fd, bplus_info, new_index_node_id);
 
     BF_Block_SetDirty(block1);
     CALL_BF(BF_UnpinBlock(block1));
@@ -352,11 +357,36 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
             return split_index_node(fd, bplus_info, metadata1->parent_id, key_to_move_up, new_index_node_id);
         }
     }
+
+    
  
     return new_index_node_id;
 
 }
 
+
+void update_parents(int fd, BPLUS_INFO* bplus_info, int parent_id){
+    BF_Block* block;
+    BF_Block_Init(&block);
+    CALL_BF(BF_GetBlock(fd, parent_id, block));
+    void* data = BF_Block_GetData(block);
+    BPLUS_INDEX_NODE* metadata = get_metadata_indexnode(fd, parent_id);
+
+    int num = metadata->num_keys;
+    for(int i = 0; i <= 2*num + 1; i+=2){
+        int child_id;
+        memcpy(&child_id, data + sizeof(BPLUS_INDEX_NODE) + i * sizeof(int), sizeof(int));
+
+        BPLUS_DATA_NODE* metadata_child = get_metadata_datanode(fd, child_id);
+        metadata_child->parent_id = parent_id;
+
+    }
+
+    BF_Block_SetDirty(block);
+    CALL_BF(BF_UnpinBlock(block));
+    BF_Block_Destroy(&block);
+
+}
 
 // εκτυπωνει τα μεταδεδομενα ενος index node καθως και τους δεικτες με τα κλειδια του
 void print_index_node(int fd, int id){
@@ -379,6 +409,7 @@ void print_index_node(int fd, int id){
     // Εκτύπωση μεταδεδομένων
     fprintf(file, "Block id: %d\n", metadata->block_id);
     fprintf(file, "Number of keys: %d\n", metadata->num_keys);
+    fprintf(file, "Parent id: %d\n", metadata->parent_id);
 
     // Εκτύπωση κλειδιών και δεικτών
     for (int i = 1; i < 2 * metadata->num_keys + 1; i += 2) {
@@ -406,6 +437,8 @@ void print_index_node(int fd, int id){
     // Κλείσιμο αρχείου
     fclose(file);
 }
+
+
 
 // επιστρεφει true αν το index node με id ειναι γεματο και false αν δεν ειναι
 bool is_full_indexnode(int fd, int id){
