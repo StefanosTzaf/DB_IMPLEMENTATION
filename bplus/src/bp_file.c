@@ -142,7 +142,7 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
   BPLUS_DATA_NODE* metadata_datanode = get_metadata_datanode(fd, data_block_to_insert);
 
   //αν υπαρχει χωρος στο block δεδομενων, εισαγουμε την εγγραφη σε αυτο
-  if(metadata_datanode->num_records < 3){
+  if(metadata_datanode->num_records < bplus_info->max_records_per_block){
     insert_rec_in_datanode(fd, data_block_to_insert, bplus_info, record);
     
     return_value = data_block_to_insert;
@@ -177,11 +177,11 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
     }
 
     //επιστροφη νεου block δεδομενων που δημιουργηθηκε μετα το split
-
     int new_data_node_id = split_data_node(fd, data_block_to_insert, bplus_info, record);
 
     //αποθηκευση του μικροτερου κλειδιου του νεου block δεδομενων, που πρεπει να εισαχθει σε index node
     int key_to_move_up = get_metadata_datanode(fd, new_data_node_id)->minKey;
+
 
     // Ορισμος του νεου block δεδομενων που δημιουργηθηκε απο το split
     BF_Block* new_data_node;
@@ -200,7 +200,8 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
     else{
 
       int new_index_node = split_index_node(fd, bplus_info, parent_id, key_to_move_up, new_data_node_id);
-
+      
+      
     }
 
 
