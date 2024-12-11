@@ -62,7 +62,6 @@ BPLUS_DATA_NODE* get_metadata_datanode(int file_desc, int block_id){
     BPLUS_DATA_NODE* data_node = (BPLUS_DATA_NODE*)(data);
 
     
-
     CALL_BF(BF_UnpinBlock(block));
     BF_Block_Destroy(&block);
 

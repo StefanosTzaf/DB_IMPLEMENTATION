@@ -52,6 +52,10 @@ int BP_CreateFile(char *fileName){
     bplus_info.key_size = sizeof(int);
     bplus_info.max_records_per_block = (BF_BLOCK_SIZE - sizeof(BPLUS_DATA_NODE)) / sizeof(Record);
 
+    int total_elements = (BF_BLOCK_SIZE - sizeof(BPLUS_INDEX_NODE)) / sizeof(int);
+    int max_keys = (total_elements - 1) / 2;
+    bplus_info.max_keys_per_index = max_keys;
+
     memcpy(data, &bplus_info, sizeof(BPLUS_INFO));
 
 
@@ -145,10 +149,6 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
   //αν υπαρχει χωρος στο block δεδομενων, εισαγουμε την εγγραφη σε αυτο
   if(metadata_datanode->num_records < bplus_info->max_records_per_block){
     
-    if(record.id == 81){
-      printf("inserting rec with id %d in data node with space\n", record.id);
-    }
-
     insert_rec_in_datanode(fd, data_block_to_insert, bplus_info, record);
     
     return_value = data_block_to_insert;
@@ -162,10 +162,6 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
   //αν δεν υπαρχει χωρος πρεπει να το σπασουμε
   else{  
-
-    if(record.id == 81){
-      printf("inserting rec with id %d and splitting data node\n", record.id);
-    }
 
     int parent_id;
     //αν δεν υπαρχει γονεας index node πρεπει να δημιουργηθει
@@ -200,12 +196,7 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
     BPLUS_DATA_NODE* new_metadata_datanode = get_metadata_datanode(fd, new_data_node_id);
 
     //αν ο γονεας index node εχει χωρο, προσθηκη κλειδιου σε αυτο
-    if(is_full_indexnode(fd, parent_id) == false){
-      if(record.id == 81){
-      printf("inserting rec with id %d and inserting in non full index node\n", record.id);
-
-      }
-
+    if(is_full_indexnode(fd, parent_id, bplus_info) == false){
 
       new_metadata_datanode->parent_id = parent_id;
       insert_key_indexnode(fd, parent_id, bplus_info, key_to_move_up, data_block_to_insert, new_data_node_id);
@@ -213,14 +204,7 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
     //αν δεν εχει χωρο σπαμε το index node
     else{
-      if(record.id == 81){
-      printf("inserting rec with id %d and splitting index node\n", record.id);
-
-      }
-
-
       int new_index_node = split_index_node(fd, bplus_info, parent_id, key_to_move_up, new_data_node_id);
-      
       
     }
 
@@ -257,17 +241,11 @@ int BP_GetEntry(int file_desc, BPLUS_INFO *bplus_info, int value, Record** recor
   BF_Block* block;
   BF_Block_Init(&block);
 
-
-
-
-
   // printf("HEIGHT before %d\n", bplus_info->height);
 
   CALL_BF(BF_GetBlock(file_desc, block_with_rec, block));
   
-//  printf("HEIGHT after %d\n", bplus_info->height);
-
-
+ printf("HEIGHT after %d\n", bplus_info->height);
 
 
 
@@ -281,7 +259,7 @@ int BP_GetEntry(int file_desc, BPLUS_INFO *bplus_info, int value, Record** recor
     Record* rec = (Record*)(data + sizeof(BPLUS_DATA_NODE) + i * sizeof(Record));
     //αν βρεθηκε η εγγραφη, επιστρεφουμε 0 και το record δειχνει στην εγγραφη αυτη
     if(rec->id == value){
-      **record = *rec;
+      memcpy(*record, rec, sizeof(Record));
 
       BF_UnpinBlock(block);
       BF_Block_Destroy(&block);
@@ -403,4 +381,23 @@ void BP_PrintTree(int fd, BPLUS_INFO* bplus_info){
   }
 
   fclose(file);
+}
+
+
+void BP_SetInfo(int fd, BPLUS_INFO* bplus_info, int max_records_per_data, int max_keys_per_index){
+  
+  BF_Block* block;
+  BF_Block_Init(&block);
+  CALL_BF(BF_GetBlock(fd, 0, block));
+
+  void* data = BF_Block_GetData(block);
+
+  bplus_info = (BPLUS_INFO*)data;
+  bplus_info->max_records_per_block = max_records_per_data;
+  bplus_info->max_keys_per_index = max_keys_per_index;
+
+  BF_Block_SetDirty(block);
+  CALL_BF(BF_UnpinBlock(block));
+  BF_Block_Destroy(&block);
+
 }

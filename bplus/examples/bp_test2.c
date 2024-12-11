@@ -8,11 +8,11 @@
 #include "bp_indexnode.h"
 
 //#############################################################//
-// #####  MAIN.C  //
+// #####    MAIN.C  - ΕΚΤΥΠΩΣΗ BLOCK ΤΟΥ ΔΕΝΤΡΟΥ               //
 // ########################################################### //
 
 #define RECORDS_NUM 2324 // you can change it if you want
-#define FILE_NAME_3 "data3.db"
+#define FILE_NAME_4 "data4.db"
 
 
 #define CALL_OR_DIE(call)     \
@@ -41,22 +41,23 @@ void insertEntries(){
   fclose(file);
 
   BF_Init(LRU);
-  BP_CreateFile(FILE_NAME_3);
+  BP_CreateFile(FILE_NAME_4);
   int file_desc;
-  BPLUS_INFO* info = BP_OpenFile(FILE_NAME_3, &file_desc);
+  BPLUS_INFO* info = BP_OpenFile(FILE_NAME_4, &file_desc);
   Record record;
   
   for (int i = 0; i < RECORDS_NUM; i++){
     record = randomRecord();
     BP_InsertEntry(file_desc, info, record);
+    
     // printf("inserting reec %d\n", record.id);
 
-    Record tmpRec;  //Αντί για malloc
-    Record* result=&tmpRec;
-    int x = BP_GetEntry(file_desc, info, record.id, &result);
-    if(x == -1){
-      printf("Record with id %d not found\n", record.id);
-    }    
+    // Record tmpRec;  //Αντί για malloc
+    // Record* result=&tmpRec;
+    // int x = BP_GetEntry(file_desc, info, record.id, &result);
+    // if(x == -1){
+    //   printf("Record with id %d not found\n", record.id);
+    // }    
   }
    BP_PrintTree(file_desc, info);
 

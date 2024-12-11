@@ -12,6 +12,7 @@ typedef struct {
     int record_size;            // μεγεθος μιας εγγραφης
     int key_size;               // μεγεθος κλειδιου
     int max_records_per_block;  // μεγιστος αριθμος εγγραφων ανα block
+    int max_keys_per_index;     // μεγιστος αριθμος κλειδιων ανα index block
 } BPLUS_INFO;
 
 
@@ -61,6 +62,8 @@ int BP_FindDataBlockToInsert(int fd, int key, int root, int height_of_current_ro
 void BP_PrintBlock(int fd, int block_id, BPLUS_INFO* bplus_info);
 
 void BP_PrintTree(int fd, BPLUS_INFO* bplus_info);
+
+void BP_SetInfo(int fd, BPLUS_INFO* bplus_info, int max_records_per_data, int max_keys_per_index);
 
 
 

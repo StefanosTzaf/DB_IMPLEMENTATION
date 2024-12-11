@@ -7,7 +7,7 @@
 #include "bp_datanode.h"
 #include "bp_indexnode.h"
 
-#define RECORDS_NUM 2324 // you can change it if you want
+#define RECORDS_NUM 2325 // you can change it if you want
 #define FILE_NAME "data.db"
 
 #define CALL_OR_DIE(call)     \
@@ -25,11 +25,9 @@ void findEntries();
 
 int main()
 {
-  
-  int total_elements = (BF_BLOCK_SIZE - sizeof(BPLUS_INDEX_NODE)) / sizeof(int);
-  int max_keys = (total_elements - 1) / 2;
+ 
   insertEntries();
-  // findEntries();
+  findEntries();
 
   ////////////////////////////////////////////////
   
@@ -47,8 +45,6 @@ void insertEntries(){
 
     int val = BP_InsertEntry(file_desc, info, record);
   }
-
-  BP_PrintTree(file_desc, info);
 
   BP_CloseFile(file_desc,info);
   BF_Close();

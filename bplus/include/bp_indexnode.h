@@ -20,7 +20,7 @@ BPLUS_INDEX_NODE* get_metadata_indexnode(int file_desc, int block_id);
 void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int key, int left_child_id, int right_child_id);
 void print_index_node(int fd, int id);
 int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_to_insert, int child_id);
-bool is_full_indexnode(int fd, int id);
+bool is_full_indexnode(int fd, int id, BPLUS_INFO* bplus_info);
 void update_parents(int fd, BPLUS_INFO* bplus_info, int parent_id);
 
 

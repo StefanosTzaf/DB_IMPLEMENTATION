@@ -147,7 +147,6 @@ void insert_key_indexnode(int fd, int id_index_node, BPLUS_INFO* bplus_info, int
 // Δεχεται ως παραμετρους το αρχειο, τα μεταδεδομενα του bplus, το id του block που θα σπασει, το κλειδι που θα εισαχθει 
 // και το id του block που πρεπει να εισαχθει ως δεικτης
 int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_to_insert, int child_id){
-    print_index_node(fd, index_node_id);
 
     // data block στο οποιο θα δειχνει ο νεος δεικτης που θα εισαχθει
     BF_Block* child;
@@ -348,7 +347,7 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
 
     else{
         //αν ο γονεας εχει χωρο, εισαγωγη εκει
-        if(is_full_indexnode(fd, metadata1->parent_id) == false){
+        if(is_full_indexnode(fd, metadata1->parent_id, bplus_info) == false){
             insert_key_indexnode(fd, metadata1->parent_id, bplus_info, key_to_move_up, index_node_id, new_index_node_id);
             metadata2->parent_id = metadata1->parent_id;
         }
@@ -356,9 +355,7 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
         else{
             return split_index_node(fd, bplus_info, metadata1->parent_id, key_to_move_up, new_index_node_id);
         }
-    }
-
-    
+    }  
  
     return new_index_node_id;
 
@@ -465,7 +462,7 @@ void print_index_node(int fd, int id){
 
 
 // επιστρεφει true αν το index node με id ειναι γεματο και false αν δεν ειναι
-bool is_full_indexnode(int fd, int id){
+bool is_full_indexnode(int fd, int id, BPLUS_INFO* bplus_info){
     
     bool is_full = false;
 
@@ -476,8 +473,10 @@ bool is_full_indexnode(int fd, int id){
     void* data = BF_Block_GetData(block);
     BPLUS_INDEX_NODE* metadata = get_metadata_indexnode(fd, id);
 
-    int total_elements = (BF_BLOCK_SIZE - sizeof(BPLUS_INDEX_NODE)) / sizeof(int);
-    int max_keys = (total_elements - 1) / 2;
+    // int total_elements = (BF_BLOCK_SIZE - sizeof(BPLUS_INDEX_NODE)) / sizeof(int);
+    // int max_keys = (total_elements - 1) / 2;
+
+    int max_keys = bplus_info->max_keys_per_index;
 
     if(metadata->num_keys == max_keys){
         is_full = true;
