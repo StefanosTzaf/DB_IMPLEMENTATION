@@ -307,6 +307,7 @@ int split_index_node(int fd, BPLUS_INFO* bplus_info, int index_node_id, int key_
 
 
     update_parents(fd, bplus_info, new_index_node_id);
+    
     BF_Block_SetDirty(block1);
     CALL_BF(BF_UnpinBlock(block1));
     BF_Block_Destroy(&block1);

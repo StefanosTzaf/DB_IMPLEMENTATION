@@ -8,10 +8,10 @@
 #include "bp_indexnode.h"
 
 //#############################################################//
-// #####   //
+// #####  MAIN.C  //
 // ########################################################### //
 
-#define RECORDS_NUM 2000 // you can change it if you want
+#define RECORDS_NUM 2324 // you can change it if you want
 #define FILE_NAME_3 "data3.db"
 
 
@@ -49,6 +49,7 @@ void insertEntries(){
   for (int i = 0; i < RECORDS_NUM; i++){
     record = randomRecord();
     BP_InsertEntry(file_desc, info, record);
+    // printf("inserting reec %d\n", record.id);
 
     Record tmpRec;  //Αντί για malloc
     Record* result=&tmpRec;

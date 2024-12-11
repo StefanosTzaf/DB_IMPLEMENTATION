@@ -102,6 +102,7 @@ int BP_CloseFile(int file_desc, BPLUS_INFO* info){
   return 0;
 }
 
+
 int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
   //επιστροφη του block id που εγινε η εισαγωγη
@@ -143,6 +144,11 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
   //αν υπαρχει χωρος στο block δεδομενων, εισαγουμε την εγγραφη σε αυτο
   if(metadata_datanode->num_records < bplus_info->max_records_per_block){
+    
+    if(record.id == 81){
+      printf("inserting rec with id %d in data node with space\n", record.id);
+    }
+
     insert_rec_in_datanode(fd, data_block_to_insert, bplus_info, record);
     
     return_value = data_block_to_insert;
@@ -156,6 +162,10 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
   //αν δεν υπαρχει χωρος πρεπει να το σπασουμε
   else{  
+
+    if(record.id == 81){
+      printf("inserting rec with id %d and splitting data node\n", record.id);
+    }
 
     int parent_id;
     //αν δεν υπαρχει γονεας index node πρεπει να δημιουργηθει
@@ -191,6 +201,11 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
     //αν ο γονεας index node εχει χωρο, προσθηκη κλειδιου σε αυτο
     if(is_full_indexnode(fd, parent_id) == false){
+      if(record.id == 81){
+      printf("inserting rec with id %d and inserting in non full index node\n", record.id);
+
+      }
+
 
       new_metadata_datanode->parent_id = parent_id;
       insert_key_indexnode(fd, parent_id, bplus_info, key_to_move_up, data_block_to_insert, new_data_node_id);
@@ -198,6 +213,11 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
 
     //αν δεν εχει χωρο σπαμε το index node
     else{
+      if(record.id == 81){
+      printf("inserting rec with id %d and splitting index node\n", record.id);
+
+      }
+
 
       int new_index_node = split_index_node(fd, bplus_info, parent_id, key_to_move_up, new_data_node_id);
       
@@ -226,6 +246,8 @@ int BP_InsertEntry(int fd,BPLUS_INFO *bplus_info, Record record){
   return -1;
 }
 
+
+
 int BP_GetEntry(int file_desc, BPLUS_INFO *bplus_info, int value, Record** record){
   //βρισκουμε σε ποιο block δεδομενων θα επρεπε να βρισκεται το κλειδι
   int height = bplus_info->height;
@@ -239,7 +261,7 @@ int BP_GetEntry(int file_desc, BPLUS_INFO *bplus_info, int value, Record** recor
 
 
 
-  //printf("HEIGHT before %d\n", bplus_info->height);
+  // printf("HEIGHT before %d\n", bplus_info->height);
 
   CALL_BF(BF_GetBlock(file_desc, block_with_rec, block));
   
