@@ -6,7 +6,6 @@
 #include "bp_file.h"
 #include "bp_datanode.h"
 #include "bp_indexnode.h"
-#include <assert.h>
 
 //################################################################################# //
 // ##### TEST FOR SEQUENTIAL INSERTION, DUPLICATE INSERTION AMD NON-EXISTENT SEARCH //
@@ -137,10 +136,10 @@ void testSearchNonExistent(){
     printf("\n--- Testing Search for Non-existent Records ---\n");
     
     BF_Init(LRU);
-    BP_CreateFile("search_test.db");
+    BP_CreateFile(FILE_NAME_3);
     
     int file_desc;
-    BPLUS_INFO* info = BP_OpenFile("search_test.db", &file_desc);
+    BPLUS_INFO* info = BP_OpenFile(FILE_NAME_3, &file_desc);
     
     Record record;
     for(int i = 1; i <= 100; i++){

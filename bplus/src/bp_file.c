@@ -245,7 +245,7 @@ int BP_GetEntry(int file_desc, BPLUS_INFO *bplus_info, int value, Record** recor
 
   CALL_BF(BF_GetBlock(file_desc, block_with_rec, block));
   
- printf("HEIGHT after %d\n", bplus_info->height);
+//  printf("HEIGHT after %d\n", bplus_info->height);
 
 
 
